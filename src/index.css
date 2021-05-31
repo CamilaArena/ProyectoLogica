@@ -1,0 +1,436 @@
+:root {
+  --backgroundColor: rgba(246, 241, 209);
+  --colorShadeA: rgb(106, 163, 137);
+  --colorShadeB: rgb(121, 186, 156);
+  --colorShadeC: rgb(150, 232, 195);
+  --colorShadeD: rgb(187, 232, 211);
+  --colorShadeE: rgb(205, 255, 232);
+}
+
+@import url("https://fonts.googleapis.com/css2?family=KoHo:wght@300&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700");
+
+
+body {
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s linear;
+  background-color: #ffe5d9; /* Color de fondo del juego en modo claro */
+}
+
+/* MODO OSCURO */
+body.dark {
+  background-color: #212529; /* Color de fondo de todo el juego en dark mode */
+}
+
+body.dark .square{
+  background: #b5babe; /* Color de la grilla en dark mode */
+  color: black; /* Color de las X de las celdas en dark mode */
+  overflow: hidden;
+  border: 1px solid rgb(104, 104, 104);
+}
+
+/* Animacion al acercar el cursor a las celdas sin pintar en dark mode */
+ body.dark .square:hover {
+  display: inline-block;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+/* Animacion al acercar el cursor a las celdas sin pintar, en dark mode */
+body.dark .square:hover:hover {
+  color: rgb(255, 255, 255);
+  background: #b8dbb8;
+  box-shadow: 0 0 30px #61ffbd; /* Brillo del neon */
+}
+
+/* Animacion de las celdas rellenas, al acercar el cursor en dark mode */
+ body.dark .fondo:hover {
+  display: inline-block;
+  color: rgb(0, 0, 0);
+  letter-spacing: 2px;
+  text-decoration: none;
+  font-size: 3em;
+  overflow: hidden;
+}
+
+/* Animacion de las celdas rellenas al acercar el cursor en dark mode */
+body.dark .fondo:hover:hover {
+  background: rgb(36, 5, 5);
+  box-shadow: 0 0 70px #ff290c; /* Brillo del neon */
+}
+
+body.dark .fondo{
+  background: #000000; /* Color de relleno de las celdas pintadas en dark mode */ 
+  border: 1px solid rgb(104, 104, 104); 
+}
+
+body.dark .gameInfo{
+  color: #eac8af; /* Color de las letras de gameInfo en dark mode */
+}
+
+body.dark .labelModoJuego{
+  background: linear-gradient(90deg, rgba(0,151,152,1) 0%, #eac8af 100%) /* Color del boton modo juego en dark mode */
+}
+
+body.dark .titulo{
+  color: rgba(0,151,152,1); 
+}
+
+/* MODO CLARO */
+.square {
+  background: #fff; /* Color de la grilla en modo claro */
+  border: 1px solid black;
+  font: 24px "Century Gothic", Futura, sans-serif;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+}
+
+.square.disabled{
+  background: transparent;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.square {
+  cursor: pointer;
+}
+
+.square:hover{ /* Animacion de las celdas sin pintar cuando acerco el cursor en modo claro */
+  background-image:linear-gradient(
+     to right, 
+     #E7484F,
+     #E7484F 16.65%,
+     #F68B1D 16.65%,
+     #F68B1D 33.3%,
+     #FCED00 33.3%,
+     #FCED00 49.95%,
+     #009E4F 49.95%,
+     #009E4F 66.6%,
+     #00AAC3 66.6%,
+     #6B97D8 83.25%,
+     #732982 83.25%,
+     #732982 100%,
+     #E7484F 100%
+   );
+ animation:slidebg 5s linear infinite;
+}
+
+@keyframes slidebg {
+ to {
+   background-position:20vw;
+ }
+}
+
+/* Animacion cuando acerco el puntero a las celdas pintadas en modo claro */
+.fondo:hover{ 
+  background-color: thistle;
+}
+
+.fondo {
+  background-color:#bdb2ff; /* Relleno de las celdas pintadas en modo claro */
+  border: 1px solid black;
+  font: 24px "Century Gothic", Futura, sans-serif;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+}
+
+.board {
+  display: grid; 
+}
+
+
+.horizontal {
+  display: flex;
+}
+
+.vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.rowClues {
+  display: grid;
+}
+
+
+/* Pistas incorrectas */
+.clueRoja {
+  justify-content: space-around;
+  display: flex;
+  align-items: center;
+  background: #f55c47; 
+  border-radius: 8px;
+  margin: 5px;
+  transition-property: background-color;
+  transition-duration: .8s; 
+}
+
+/* Pistas correctas */
+.clueVerde {
+  justify-content: space-around;
+  display: flex;
+  align-items: center;
+  background: #9fe6a0;
+  border-radius: 8px;
+  margin: 5px;
+  transition-property: background-color;
+  transition-duration: .8s; 
+}
+
+.clue div {
+  margin: 5px;
+}
+
+.colClues {
+  display: grid;
+  flex-direction: column;
+}
+
+.colClues .clue {
+  flex-direction: column;
+}
+
+.colClues .clueRoja, .colClues .clueVerde{
+  flex-direction: column;
+  justify-content:flex;
+}
+
+.rowClues .clueRoja, .rowClues .clueVerde{
+  justify-content: space-around;
+}
+
+.game {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.gameInfo {
+  margin-top: 53px;
+  display: inline-block;
+  vertical-align: middle;
+  position: relative;
+  margin-left: 25px;
+  font-family: "KoHo";
+  font-weight: bold;
+  font-size: 150%;
+  text-align: right;
+  color: #fe6b8b; /* Color del texto de game info en modo claro */
+  height: 100px;
+  width: 150px;
+}
+
+.titulo{
+  margin-top: -85px;
+  margin-right: -40px;
+  display: flex;  
+  justify-content: center;
+  vertical-align: middle;
+  position: absolute;
+  margin-left: -60px;
+  font-family: "Pacifico";
+  font-weight: bold;
+  font-size: 290%;
+  text-align: center;
+  color: #6B97D8; 
+  height: 100px;
+  width: 150px;
+  align-items:flex-start
+}
+
+/*Boton restart*/
+button {
+  position: relative;
+  margin-top: 90px;
+  display: inline-block;
+  cursor: pointer;
+  outline: none;
+  border: 0;
+  vertical-align: middle;
+  text-decoration: none;
+  font-size: 0.8rem;
+    color:var(--colorShadeA);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-family: inherit;
+}
+
+button.restart-button {
+   padding: 1em 2em;
+   border: 2px solid var(--colorShadeA);
+  border-radius: 1em;
+  background: var(--colorShadeE);
+transform-style: preserve-3d;
+   transition: all 175ms cubic-bezier(0, 0, 1, 1);
+}
+button.restart-button::before {
+  position: absolute;
+  content: '';
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--colorShadeC);
+  border-radius: inherit;
+    box-shadow: 0 0 0 2px var(--colorShadeB), 0 0.75em 0 0 var(--colorShadeA);
+ transform: translate3d(0, 0.75em, -1em);
+     transition: all 175ms cubic-bezier(0, 0, 1, 1);
+}
+
+
+button.restart-button:hover {
+  background: var(--colorShadeD);
+  transform: translate(0, 0.375em);
+}
+
+button.restart-button:hover::before {
+  transform: translate3d(0, 0.75em, -1em);
+}
+
+button.restart-button:active {
+            transform: translate(0em, 0.75em);
+}
+
+button.restart-button:active::before {
+  transform: translate3d(0, 0, -1em);
+  
+      box-shadow: 0 0 0 2px var(--colorShadeB), 0 0.25em 0 0 var(--colorShadeB);
+
+}
+
+/* BOTON MODO JUEGO */
+.modojuego {
+  position: relative; 
+  margin: 138px -90px 150px;
+  width: 75px;
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-align: left;  
+}
+
+.toggle-switch-checkbox,
+.checkbox {
+  display: none;    
+}
+
+/* Movimiento label del modo de juego */
+.toggle-switch-checkbox:checked + .labelModoJuego .ballModoJuego {
+  transform: translateX(35px);
+}
+
+.labelModoJuego { 
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  border: 0 solid #bbb;
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(179,103,230,1) 0%, rgba(255,109,109,1) 50%, rgba(255,176,65,1) 100%);
+  padding: 6px;
+}
+
+.ballModoJuego {
+  background-color: #fff;
+  border-radius: 5px;
+  display: flex;
+  top: 5px;
+  left: 5px;
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  transition: transform 0.4s linear;
+}
+
+/* BOTON MODO OSCURO */
+.checkbox:checked + .label .ball {
+  transform: translateX(24px);
+}
+
+.checkbox:checked + .label{
+  background-color: #111;
+}
+
+/* Label dark mode */
+.label { 
+  background-color: #6B97D8;
+  border-radius: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  position: relative;
+  margin: 320px 22px 150px;
+  height: 26px;
+  width: 50px;
+  transform: scale(1.2);
+}
+
+.ball {
+  background-color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  position: absolute;
+  display: flex;
+  transition: transform 0.4s linear;
+}
+
+/* Movimiento label de dark mode */
+.checkbox:checked + .label .ball {
+  transform: translateX(24px);
+}
+
+/* Icono de luna */
+.fa-moon {
+  color: #ffffff;
+}
+
+/* Icono de sol */
+.fa-sun {
+  color: #fffb00;
+}
+
+/*Boton de ayuda*/
+/*.botonAyuda:hover{
+
+  display: inline-block;
+  text-decoration: none;
+  overflow: hidden;
+  
+
+}*/
+
+.botonAyuda{
+  margin-top: 100px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  border: 0;
+  vertical-align: middle;
+  padding: 1em 2em;
+}
+
+.botonAyuda:hover {
+  
+}
+
