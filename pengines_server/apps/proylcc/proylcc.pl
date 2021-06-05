@@ -82,7 +82,7 @@ getFila(N, Matriz, Fila) :-
 % Verifica que no queden '#' en una lista.
 noQuedanHashtags([]).
 noQuedanHashtags([X|Xs]):-
-   X \== "#",
+   X = "X",
    noQuedanHashtags(Xs).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,9 +93,9 @@ noQuedanHashtags([X|Xs]):-
 % Verifico que la lista cumpla con las pistas y devuelvo la lista restante sin los primeros # de la primera pista.
 cantidadDeHashtagsIgualAPistas(0,[],[]).
 cantidadDeHashtagsIgualAPistas(0, [Y|Ys], [Y|Ys]):-
-   Y \== "#".
+   Y = "X".
 cantidadDeHashtagsIgualAPistas(P, [Y|Ys], Res):-
-   Y == "#",
+   Y = "#",
    Aux is P-1,
    cantidadDeHashtagsIgualAPistas(Aux, Ys, Res).
 
@@ -108,9 +108,9 @@ cantidadDeHashtagsIgualAPistas(P, [Y|Ys], Res):-
 % Recorre la lista hasta llegar a un # y cuando llega retorna la lista restante.
 recorrerHastaHashtag([], []).
 recorrerHastaHashtag([X|Xs], [X|Xs]):-
-   X == "#".
+   X = "#".
 recorrerHastaHashtag([X|Xs], Res):-
-   X \== "#",
+   X = "X",
    recorrerHastaHashtag(Xs, Res).
 
 
@@ -119,7 +119,8 @@ recorrerHastaHashtag([X|Xs], Res):-
 % verificarPistasEnLista(+P, +ListaRes)
 %
 
-% Verifica que se cumplan todas las pistas en la lista, devuleve true si se verifican y false en caso contrario.
+% Verifica que se cumplan todas las pistas en la lista, retorna la lista que cumple con las pistas dadas.
+% Caso contrario, devuelve false.
 verificarPistasEnLista([0], []).
 verificarPistasEnLista([], Lista):-
    noQuedanHashtags(Lista).
@@ -127,14 +128,14 @@ verificarPistasEnLista([X|RestoPistas], Lista):-
     X == 0, 
     verificarPistasEnLista(RestoPistas, Lista). 
 verificarPistasEnLista([X|RestoPistas], [Y|Ys]):-
-   Y == "#",
+   Y = "#",
    cantidadDeHashtagsIgualAPistas(X, [Y|Ys], Rta),
    ListaRestante = Rta,
    recorrerHastaHashtag(ListaRestante, LR),
    ListaReducidaHastaHashtag = LR,
    verificarPistasEnLista(RestoPistas, ListaReducidaHastaHashtag).
 verificarPistasEnLista([X|RestoPistas], [Y|Ys]):-
-    Y\== "#",
+    Y = "X",
     recorrerHastaHashtag([Y|Ys], Respuesta),
     ListaEnHashtag = Respuesta,
     verificarPistasEnLista([X|RestoPistas], ListaEnHashtag).
@@ -234,4 +235,3 @@ verificarFilasInicial(Grilla, PistasFilas, Aux, CantFilas, FilasCumplen):-
    ; 
    FilasCumplen = RestoLista), 
    verificarFilasInicial(Grilla, PistasFilas, Pos, CantFilas, RestoLista).
-
