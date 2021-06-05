@@ -301,3 +301,80 @@ generarFilaConPistas([X|RestoPistas], [Y|Ys]):-
     rari([Y|Ys], Respuesta),
     ListaEnHashtag = Respuesta,
     generarFilaConPistas([X|RestoPistas], ListaEnHashtag).
+
+
+
+
+
+    /*Primera pasada: Es para las filas/col que podemos asegurar 1 sola movida
+suma_pistas + length_pistas - 1 == Long de fila/Col*/
+
+sumarPistas([], 0).
+sumarPistas([X|Xs], Suma):-
+          sumarPistas(Xs, SumaAux),
+          Suma is SumaAux + X.
+
+filasSeguras(_Grilla, _PistasFila, Aux, CantFilas):-
+    Aux == CantFilas.
+filasSeguras(Grilla, PistasFila, Aux, CantFilas):-
+    Aux < CantFilas,
+    nth0(Aux, Grilla, Fila), 
+    length(Fila, LongitudFila),
+	nth0(Aux, PistasFila, Pista), 
+	sumarPistas(Pista, Suma),
+    length(Pista, LongitudPista),
+    Cuenta is (Suma + LongitudPista-1),
+    Cuenta == LongitudFila,
+    generarFilaConPistas(Pista, FilaSegura),
+    Fila = FilaSegura,
+    Aux2 is Aux+1,
+    filasSeguras(Grilla, PistasFila, Aux2, CantFilas).
+filasSeguras(Grilla, PistasFila, Aux, CantFilas):-
+    Aux < CantFilas,
+    nth0(Aux, Grilla, Fila), 
+    length(Fila, LongitudFila),
+	nth0(Aux, PistasFila, Pista), 
+	sumarPistas(Pista, Suma),
+    length(Pista, LongitudPista),
+    Cuenta is (Suma + LongitudPista-1),
+    Cuenta \== LongitudFila,
+    Aux2 is Aux+1,
+    filasSeguras(Grilla, PistasFila, Aux2, CantFilas).
+
+columnasSeguras(_Grilla, _PistasCol, Aux, CantCol):-
+    Aux == CantCol.
+columnasSeguras(Grilla, PistasCol, Aux, CantCol):-
+    Aux < CantCol,
+    getColumna(Aux,Grilla,Col),
+    length(Col, LongitudColumna),
+	nth0(Aux, PistasCol, Pista), 
+	sumarPistas(Pista, Suma),
+    length(Pista, LongitudPista),
+    Cuenta is (Suma + LongitudPista-1),
+    Cuenta == LongitudColumna,
+    generarFilaConPistas(Pista, ColumnaSegura),
+    Col = ColumnaSegura,
+    Aux2 is Aux+1,
+    columnasSeguras(Grilla, PistasCol, Aux2, CantCol).
+columnasSeguras(Grilla, PistasCol, Aux, CantCol):-
+    Aux < CantCol,
+    getColumna(Aux,Grilla,Col),
+    length(Col, LongitudColumna),
+	nth0(Aux, PistasCol, Pista), 
+	sumarPistas(Pista, Suma),
+    length(Pista, LongitudPista),
+    Cuenta is (Suma + LongitudPista-1),
+    Cuenta \== LongitudColumna,
+    Aux2 is Aux+1,
+    columnasSeguras(Grilla, PistasCol, Aux2, CantCol).
+    
+
+/*resolverNonograma(Grilla, PistasFila, PistasCol):-
+    fYCSeguras(Grilla, PistasFila, PistasCol, NuevaGrilla).*/
+    
+resolverNonograma(Grilla, PistasFila, PistasCol, Grilla):-
+	%Primera parte del algoritmo
+   cantFil(Grilla, CantFilas),
+	filasSeguras(Grilla, PistasFila, 0, CantFilas),
+   cantCol(Grilla, CantCol),
+   columnasSeguras(Grilla, PistasCol, 0, CantCol).
