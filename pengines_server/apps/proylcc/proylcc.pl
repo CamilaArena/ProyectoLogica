@@ -82,7 +82,7 @@ getFila(N, Matriz, Fila) :-
 % Verifica que no queden '#' en una lista.
 noQuedanHashtags([]).
 noQuedanHashtags([X|Xs]):-
-   X = "X",
+   X \== "#",
    noQuedanHashtags(Xs).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -93,9 +93,9 @@ noQuedanHashtags([X|Xs]):-
 % Verifico que la lista cumpla con las pistas y devuelvo la lista restante sin los primeros # de la primera pista.
 cantidadDeHashtagsIgualAPistas(0,[],[]).
 cantidadDeHashtagsIgualAPistas(0, [Y|Ys], [Y|Ys]):-
-   Y = "X".
+   Y \== "#".
 cantidadDeHashtagsIgualAPistas(P, [Y|Ys], Res):-
-   Y = "#",
+   Y == "#",
    Aux is P-1,
    cantidadDeHashtagsIgualAPistas(Aux, Ys, Res).
 
@@ -108,9 +108,9 @@ cantidadDeHashtagsIgualAPistas(P, [Y|Ys], Res):-
 % Recorre la lista hasta llegar a un # y cuando llega retorna la lista restante.
 recorrerHastaHashtag([], []).
 recorrerHastaHashtag([X|Xs], [X|Xs]):-
-   X = "#".
+   X == "#".
 recorrerHastaHashtag([X|Xs], Res):-
-   X = "X",
+   X \== "#",
    recorrerHastaHashtag(Xs, Res).
 
 
@@ -119,8 +119,7 @@ recorrerHastaHashtag([X|Xs], Res):-
 % verificarPistasEnLista(+P, +ListaRes)
 %
 
-% Verifica que se cumplan todas las pistas en la lista, retorna la lista que cumple con las pistas dadas.
-% Caso contrario, devuelve false.
+% Verifica que se cumplan todas las pistas en la lista, devuleve true si se verifican y false en caso contrario.
 verificarPistasEnLista([0], []).
 verificarPistasEnLista([], Lista):-
    noQuedanHashtags(Lista).
@@ -128,14 +127,14 @@ verificarPistasEnLista([X|RestoPistas], Lista):-
     X == 0, 
     verificarPistasEnLista(RestoPistas, Lista). 
 verificarPistasEnLista([X|RestoPistas], [Y|Ys]):-
-   Y = "#",
+   Y == "#",
    cantidadDeHashtagsIgualAPistas(X, [Y|Ys], Rta),
    ListaRestante = Rta,
    recorrerHastaHashtag(ListaRestante, LR),
    ListaReducidaHastaHashtag = LR,
    verificarPistasEnLista(RestoPistas, ListaReducidaHastaHashtag).
 verificarPistasEnLista([X|RestoPistas], [Y|Ys]):-
-    Y = "X",
+    Y\== "#",
     recorrerHastaHashtag([Y|Ys], Respuesta),
     ListaEnHashtag = Respuesta,
     verificarPistasEnLista([X|RestoPistas], ListaEnHashtag).
@@ -235,3 +234,70 @@ verificarFilasInicial(Grilla, PistasFilas, Aux, CantFilas, FilasCumplen):-
    ; 
    FilasCumplen = RestoLista), 
    verificarFilasInicial(Grilla, PistasFilas, Pos, CantFilas, RestoLista).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% rellenarConX(+Lista)
+%
+
+% Dada una lista, le inserta "X" hasta el final.
+rellenarConX([]).
+rellenarConX([X|Xs]):-
+   X = "X",
+   rellenarConX(Xs).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% generarHashtagsIgualAPistas(+P, +Lista, -ListaRestante)
+%
+
+% Genera una lista con P "#" y luego inserta una "X".
+generarHashtagsIgualAPistas(0,[],[]).
+generarHashtagsIgualAPistas(0, [Y|Ys], [Y|Ys]):-
+   Y = "X".
+generarHashtagsIgualAPistas(P, [Y|Ys], Res):-
+   Y = "#",
+   Aux is P-1,
+   generarHashtagsIgualAPistas(Aux, Ys, Res).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% rari(+Lista, -ListaRes)
+%
+
+% Recorre la lista hasta llegar a un # y cuando llega retorna la lista restante.
+rari([], []).
+rari([X|Xs], [X|Xs]):-
+   X = "#".
+rari([X|Xs], Res):-
+   X = "X",
+   rari(Xs, Res).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% generarFilaConPistas(+P, +ListaRes)
+%
+
+% Dada una lista de pistas, genera una fila que verifica las pistas dadas.
+% Si no existe una fila que verifique las pistas retorna falso.
+generarFilaConPistas([0], []).
+generarFilaConPistas([], Lista):-
+   rellenarConX(Lista).
+generarFilaConPistas([X|RestoPistas], Lista):-
+    X == 0, 
+    generarFilaConPistas(RestoPistas, Lista). 
+generarFilaConPistas([X|RestoPistas], [Y|Ys]):-
+   Y = "#",
+   generarHashtagsIgualAPistas(X, [Y|Ys], Rta),
+   ListaRestante = Rta,
+   rari(ListaRestante, LR),
+   ListaReducidaHastaHashtag = LR,
+   generarFilaConPistas(RestoPistas, ListaReducidaHastaHashtag).
+generarFilaConPistas([X|RestoPistas], [Y|Ys]):-
+    Y = "X",
+    rari([Y|Ys], Respuesta),
+    ListaEnHashtag = Respuesta,
+    generarFilaConPistas([X|RestoPistas], ListaEnHashtag).
