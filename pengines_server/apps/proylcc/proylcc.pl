@@ -278,29 +278,29 @@ rari([X|Xs], Res):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% generarFilaConPistas(+P, +ListaRes)
+% generarListaConPistas(+P, +ListaRes)
 %
 
 % Dada una lista de pistas, genera una fila que verifica las pistas dadas.
 % Si no existe una fila que verifique las pistas retorna falso.
-generarFilaConPistas([0], []).
-generarFilaConPistas([], Lista):-
+generarListaConPistas([0], []).
+generarListaConPistas([], Lista):-
    rellenarConX(Lista).
-generarFilaConPistas([X|RestoPistas], Lista):-
+generarListaConPistas([X|RestoPistas], Lista):-
     X == 0, 
-    generarFilaConPistas(RestoPistas, Lista). 
-generarFilaConPistas([X|RestoPistas], [Y|Ys]):-
+    generarListaConPistas(RestoPistas, Lista). 
+generarListaConPistas([X|RestoPistas], [Y|Ys]):-
    Y = "#",
    generarHashtagsIgualAPistas(X, [Y|Ys], Rta),
    ListaRestante = Rta,
    rari(ListaRestante, LR),
    ListaReducidaHastaHashtag = LR,
-   generarFilaConPistas(RestoPistas, ListaReducidaHastaHashtag).
-generarFilaConPistas([X|RestoPistas], [Y|Ys]):-
+   generarListaConPistas(RestoPistas, ListaReducidaHastaHashtag).
+generarListaConPistas([X|RestoPistas], [Y|Ys]):-
     Y = "X",
     rari([Y|Ys], Respuesta),
     ListaEnHashtag = Respuesta,
-    generarFilaConPistas([X|RestoPistas], ListaEnHashtag).
+    generarListaConPistas([X|RestoPistas], ListaEnHashtag).
 
 
 
@@ -325,7 +325,7 @@ filasSeguras(Grilla, PistasFila, Aux, CantFilas):-
     length(Pista, LongitudPista),
     Cuenta is (Suma + LongitudPista-1),
     Cuenta == LongitudFila,
-    generarFilaConPistas(Pista, FilaSegura),
+    generarListaConPistas(Pista, FilaSegura),
     Fila = FilaSegura,
     Aux2 is Aux+1,
     filasSeguras(Grilla, PistasFila, Aux2, CantFilas).
@@ -352,7 +352,7 @@ columnasSeguras(Grilla, PistasCol, Aux, CantCol):-
     length(Pista, LongitudPista),
     Cuenta is (Suma + LongitudPista-1),
     Cuenta == LongitudColumna,
-    generarFilaConPistas(Pista, ColumnaSegura),
+    generarListaConPistas(Pista, ColumnaSegura),
     Col = ColumnaSegura,
     Aux2 is Aux+1,
     columnasSeguras(Grilla, PistasCol, Aux2, CantCol).
