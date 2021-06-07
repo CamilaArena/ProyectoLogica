@@ -312,68 +312,51 @@ sumarPistas([X|Xs], Suma):-
           Suma is SumaAux + X.
 
 
-filasSeguras(_Grilla, _PistasFila, Aux, CantFilas):- 
+filasSeguras(_GrillaIn, _PistasFila, Aux, CantFilas, []):- 
     Aux == CantFilas.   %Si Aux == cantFilas significa que ya recorri todas las filas de la grilla
-filasSeguras(Grilla, PistasFila, Aux, CantFilas):-
+filasSeguras(GrillaIn, PistasFila, Aux, CantFilas, [FilaSegura|RestoSalida]):-
     Aux < CantFilas,
-    nth0(Aux, Grilla, Fila), %Obtengo la fila en la posicion Aux de la grilla
+    nth0(Aux, GrillaIn, Fila), %Obtengo la fila en la posicion Aux de la grilla
     length(Fila, LongitudFila),
-	 nth0(Aux, PistasFila, Pista), %Obtengo las pistas de la fila en la posicion Aux de la grilla
-	 sumarPistas(Pista, Suma),
+	nth0(Aux, PistasFila, Pista), %Obtengo las pistas de la fila en la posicion Aux de la grilla
+	sumarPistas(Pista, Suma),
     length(Pista, LongitudPista),
     Cuenta is (Suma + LongitudPista-1), %Cuenta calcula si la fila que cumple con las pistas tiene una unica solucion
     Cuenta == LongitudFila, %Verifico que la fila tenga una unica solucion
     generarListaConPistas(Pista, FilaSegura), %Si la fila es unica, entonces genero la fila segura
-    Fila = FilaSegura,
     Aux2 is Aux+1, %Aumento Aux para pasar a la siguiente fila
-    filasSeguras(Grilla, PistasFila, Aux2, CantFilas).
-filasSeguras(Grilla, PistasFila, Aux, CantFilas):-
+    filasSeguras(GrillaIn, PistasFila, Aux2, CantFilas, RestoSalida).
+filasSeguras(GrillaIn, PistasFila, Aux, CantFilas, [Fila|RestoSalida]):-
     Aux < CantFilas,
-    nth0(Aux, Grilla, Fila), %Obtengo la fila en la posicion Aux de la grilla
-    length(Fila, LongitudFila),
-	 nth0(Aux, PistasFila, Pista), %Obtengo las pistas de la fila en la posicion Aux de la grilla
-	 sumarPistas(Pista, Suma),
-    length(Pista, LongitudPista),
-    Cuenta is (Suma + LongitudPista-1), %Cuenta calcula si la fila que cumple con las pistas tiene una unica solucion
-    Cuenta \== LongitudFila, %Si la fila no tiene una unica solucion
+    nth0(Aux, GrillaIn, Fila), %Obtengo la fila en la posicion Aux de la grilla
     Aux2 is Aux+1, %Aumento Aux para pasar a la siguiente fila
-    filasSeguras(Grilla, PistasFila, Aux2, CantFilas).
+    filasSeguras(GrillaIn, PistasFila, Aux2, CantFilas, RestoSalida).
 
 
-columnasSeguras(_Grilla, _PistasCol, Aux, CantCol):-
+columnasSeguras(_GrillaIn, _PistasCol, Aux, CantCol, []):-
     Aux == CantCol. %Si Aux == cantCol significa que ya recorri todas las columnas de la grilla
-columnasSeguras(Grilla, PistasCol, Aux, CantCol):-
+columnasSeguras(GrillaIn, PistasCol, Aux, CantCol, [ColumnaSegura|RestoSalida]):-
     Aux < CantCol,
-    getColumna(Aux,Grilla,Col), %Obtengo la columna en la posicion Aux de la grilla
+    getColumna(Aux,GrillaIn,Col), %Obtengo la columna en la posicion Aux de la grilla
     length(Col, LongitudColumna),
-	 nth0(Aux, PistasCol, Pista), %Obtengo las pistas de la columna en la posicion Aux de la grilla
-	 sumarPistas(Pista, Suma),
+	nth0(Aux, PistasCol, Pista), %Obtengo las pistas de la columna en la posicion Aux de la grilla
+	sumarPistas(Pista, Suma),
     length(Pista, LongitudPista),
     Cuenta is (Suma + LongitudPista-1), %Cuenta calcula si la columna que cumple con las pistas tiene una unica solucion
     Cuenta == LongitudColumna, %Verifico que la columna tenga una unica solucion
     generarListaConPistas(Pista, ColumnaSegura), %Si la columna es unica, entonces genero la columna segura
-    Col = ColumnaSegura,
     Aux2 is Aux+1, %Aumento Aux para pasar a la siguiente columna
-    columnasSeguras(Grilla, PistasCol, Aux2, CantCol).
-columnasSeguras(Grilla, PistasCol, Aux, CantCol):-
+    columnasSeguras(GrillaIn, PistasCol, Aux2, CantCol, RestoSalida).
+columnasSeguras(GrillaIn, PistasCol, Aux, CantCol, [Col|RestoSalida]):-
     Aux < CantCol,
-    getColumna(Aux,Grilla,Col), %Obtengo la columna en la posicion Aux de la grilla
-    length(Col, LongitudColumna),
-	 nth0(Aux, PistasCol, Pista), %Obtengo las pistas de la columna en la posicion Aux de la grilla
-	 sumarPistas(Pista, Suma),
-    length(Pista, LongitudPista),
-    Cuenta is (Suma + LongitudPista-1), %Cuenta calcula si la columna que cumple con las pistas tiene una unica solucion
-    Cuenta \== LongitudColumna, %Si la columna no tiene una unica solucion
+    getColumna(Aux,GrillaIn,Col), %Obtengo la columna en la posicion Aux de la grilla
     Aux2 is Aux+1, %Aumento Aux para pasar a la siguiente columna
-    columnasSeguras(Grilla, PistasCol, Aux2, CantCol).
+    columnasSeguras(GrillaIn, PistasCol, Aux2, CantCol, RestoSalida).
     
-
-/*resolverNonograma(Grilla, PistasFila, PistasCol):-
-    fYCSeguras(Grilla, PistasFila, PistasCol, NuevaGrilla).*/
     
-resolverNonograma(Grilla, PistasFila, PistasCol, Grilla):-
+resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaOut):-
 	%Primera parte del algoritmo
-   cantFil(Grilla, CantFilas),
-	filasSeguras(Grilla, PistasFila, 0, CantFilas),
-   cantCol(Grilla, CantCol),
-   columnasSeguras(Grilla, PistasCol, 0, CantCol).
+	cantFil(GrillaIn, CantFilas),
+    filasSeguras(GrillaIn, PistasFila, 0, CantFilas, GrillaAuxiliarF),
+    cantCol(GrillaIn, CantCol),
+    columnasSeguras(GrillaAuxiliarF, PistasCol, 0, CantCol, GrillaOut).
