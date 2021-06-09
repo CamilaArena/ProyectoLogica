@@ -354,9 +354,75 @@ columnasSeguras(GrillaIn, PistasCol, Aux, CantCol, [Col|RestoSalida]):-
     columnasSeguras(GrillaIn, PistasCol, Aux2, CantCol, RestoSalida).
     
     
-resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaOut):-
+resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaFinal):-
 	%Primera parte del algoritmo
 	cantFil(GrillaIn, CantFilas),
     filasSeguras(GrillaIn, PistasFila, 0, CantFilas, GrillaAuxiliarF),
     cantCol(GrillaIn, CantCol),
-    columnasSeguras(GrillaAuxiliarF, PistasCol, 0, CantCol, GrillaOut).
+    columnasSeguras(GrillaAuxiliarF, PistasCol, 0, CantCol, GrillaAuxiliarC),
+    segundaParte(GrillaAuxiliarC, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol).
+    
+
+segundaParte(GrillaIn, PistasFilas, _PistasCol, GrillaFinal, CantFilas, CantCol):-
+    generarPosiblesFilas(GrillaIn, PistasFilas, CantFilas, GrillaFinal, 0, CantCol).
+
+generarPosiblesFilas(_GrillaIn, _PistasFilas, CantFilas, [], Aux, _Length):-
+    Aux == CantFilas. 
+generarPosiblesFilas(GrillaIn, PistasFilas, CantFilas, [FilaFinal | RestoFilas], Aux, Length):-
+    Aux < CantFilas,
+    nth0(Aux, GrillaIn, Fila), %Obtengo la fila en la posicion Aux de la grilla
+    not(listaLlena(Fila)), %Si es vacía (solo tiene espacios), no la salteo 
+	nth0(Aux, PistasFilas, Pista), %Obtengo la pista de esa fila    
+    findall(Lista, (length(Lista, Length), generarListaConPistas(Pista, Lista)), TodasPosibles), 
+    interseccion(TodasPosibles, CantFilas, 0, FilaFinal),
+    Aux2 is Aux+1, 
+    generarPosiblesFilas(GrillaIn, PistasFilas, CantFilas, RestoFilas, Aux2, Length). 
+generarPosiblesFilas(GrillaIn, PistasFilas, CantFilas, [Fila | RestoFilas], Aux, Length):-
+    Aux < CantFilas,
+    nth0(Aux, GrillaIn, Fila), %Obtengo la fila en la posicion Aux de la grilla
+    Aux2 is Aux+1, 
+    generarPosiblesFilas(GrillaIn, PistasFilas, CantFilas, RestoFilas, Aux2, Length).     
+    
+
+interseccion(TodasPosibles, CantFilas, Aux, Out):-
+    interseccion_aux(TodasPosibles, CantFilas, Aux, [], Out).
+
+
+interseccion_aux(_TodasPosibles, CantFilas, Aux, Out, Out):-
+    Aux == CantFilas. 
+interseccion_aux(TodasPosibles, CantFilas, Aux, In, Out):-
+    Aux < CantFilas, 
+    findall(Elemento, (member(Lista, TodasPosibles), nth0(Aux, Lista, Elemento)), TodosLosElementos), 
+    todosIguales("#", TodosLosElementos), 
+    append(["#"], In, ListaAuxiliar), 
+    Aux2 is Aux+1, 
+    interseccion_aux(TodasPosibles, CantFilas, Aux2, ListaAuxiliar, Out). 
+interseccion_aux(TodasPosibles, CantFilas, Aux, In, Out):-
+    Aux < CantFilas, 
+    findall(Elemento, (member(Lista, TodasPosibles), nth0(Aux, Lista, Elemento)), TodosLosElementos), 
+    todosIguales("X", TodosLosElementos), 
+    append(["X"], In, ListaAuxiliar),
+    Aux2 is Aux+1, 
+    interseccion_aux(TodasPosibles, CantFilas, Aux2, ListaAuxiliar, Out). 
+interseccion_aux(TodasPosibles, CantFilas, Aux, In, Out):-
+    Aux < CantFilas, 
+    append([_], In, ListaAuxiliar),
+    Aux2 is Aux+1, 
+    interseccion_aux(TodasPosibles, CantFilas, Aux2, ListaAuxiliar, Out). 
+    
+todosIguales(_Elemento, []). 
+todosIguales(Elemento, [X|Xs]):-
+    X == Elemento, 
+    todosIguales(Elemento, Xs). 
+    
+listaLlena([]).     
+listaLlena([X|Xs]):-
+    X == "#", 
+    listaLlena(Xs). 
+listaLlena([X|Xs]):-
+    X == "X",
+    listaLlena(Xs). 
+    
+    
+
+
