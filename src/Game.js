@@ -130,30 +130,9 @@ class Game extends React.Component {
     this.setState ({statusText : '¡Bienvenido!'});
     this.setState ({title : 'Nonograma'});*/
 
-   /* this.setState ({
-      grid: null,
-      rowClues: null,
-      colClues: null,
-      selected: '#', //Modo de juego (X o #)
-      disabled: false, //Deshabilita el tablero una vez que se gana el juego
-      ganar: false,
-      waiting: false,
-      satisfaceF: false,
-      satisfaceC: false,
-      filaSatisface :[], 
-      columnaSatisface:[],
-      filasCumplen:[], 
-      columnasCumplen:[], 
-      statusText : '¡Bienvenido!',
-      title : 'Nonograma', 
-    });*/
-
-
     this.setState({
       grid : [...this.state.gridAux] 
     });
-
-   /*let auxiliar= [...this.state.filaSatisface];*/
   
    /* this.handleClick = this.handleClick.bind(this);
     this.handlePengineCreate = this.handlePengineCreate.bind(this);*/
@@ -232,11 +211,31 @@ class Game extends React.Component {
       return null;
     }
 
-    //Boton restart
+    /* Boton de ayuda */
+    const help = document.querySelector('.botonAyuda');
+     help.addEventListener('click', () => {
+
+     const tablero = JSON.stringify(this.state.grid).replaceAll('""', "");
+     const queryResolver = 'resolverNonograma(' + tablero + ', '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+ ',' +'grillaResuelta )';
+
+      /*resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaFinal)*/    
+      
+     this.pengine.query(queryResolver, (success, response) => {
+      if (success) {
+        this.setState({
+          grid: response['grillaResuelta'],
+       });
+      }
+    });
+   });
+
+
+    /* Boton restart */
     const btn = document.querySelector('.restart-button');
     btn.addEventListener('click', () => {
       this.reiniciar();
     });
+
         
     return (
       <div className = "game">
