@@ -312,117 +312,127 @@ sumarPistas([X|Xs], Suma):-
           Suma is SumaAux + X.
 
 
-filasSeguras(_GrillaIn, _PistasFila, Aux, CantFilas, []):- 
-    Aux == CantFilas.   %Si Aux == cantFilas significa que ya recorri todas las filas de la grilla
-filasSeguras(GrillaIn, PistasFila, Aux, CantFilas, [FilaSegura|RestoSalida]):-
-    Aux < CantFilas,
-    nth0(Aux, GrillaIn, Fila), %Obtengo la fila en la posicion Aux de la grilla
-    length(Fila, LongitudFila),
-	nth0(Aux, PistasFila, Pista), %Obtengo las pistas de la fila en la posicion Aux de la grilla
+listasSeguras(_GrillaIn, _PistasFila, Aux, Cant, []):- 
+    Aux == Cant.   %Si Aux == cantFilas significa que ya recorri todas las filas de la grilla
+listasSeguras(GrillaIn, ListaPistas, Aux, Cant, [ListaSegura|RestoSalida]):-
+    Aux < Cant,
+    nth0(Aux, GrillaIn, Lista), %Obtengo la fila en la posicion Aux de la grilla
+    length(Lista, LongitudLista),
+	nth0(Aux, ListaPistas, Pista), %Obtengo las pistas de la fila en la posicion Aux de la grilla
 	sumarPistas(Pista, Suma),
     length(Pista, LongitudPista),
     Cuenta is (Suma + LongitudPista-1), %Cuenta calcula si la fila que cumple con las pistas tiene una unica solucion
-    Cuenta == LongitudFila, %Verifico que la fila tenga una unica solucion
-    generarListaConPistas(Pista, FilaSegura), %Si la fila es unica, entonces genero la fila segura
+    Cuenta == LongitudLista, %Verifico que la fila tenga una unica solucion
+    generarListaConPistas(Pista, ListaSegura), %Si la fila es unica, entonces genero la fila segura
     Aux2 is Aux+1, %Aumento Aux para pasar a la siguiente fila
-    filasSeguras(GrillaIn, PistasFila, Aux2, CantFilas, RestoSalida).
-filasSeguras(GrillaIn, PistasFila, Aux, CantFilas, [Fila|RestoSalida]):-
-    Aux < CantFilas,
-    nth0(Aux, GrillaIn, Fila), %Obtengo la fila en la posicion Aux de la grilla
+    listasSeguras(GrillaIn, ListaPistas, Aux2, Cant, RestoSalida).
+listasSeguras(GrillaIn, ListaPistas, Aux, Cant, [Lista|RestoSalida]):-
+    Aux < Cant,
+    nth0(Aux, GrillaIn, Lista), %Obtengo la fila en la posicion Aux de la grilla
     Aux2 is Aux+1, %Aumento Aux para pasar a la siguiente fila
-    filasSeguras(GrillaIn, PistasFila, Aux2, CantFilas, RestoSalida).
+    listasSeguras(GrillaIn, ListaPistas, Aux2, Cant, RestoSalida).
 
-
-columnasSeguras(_GrillaIn, _PistasCol, Aux, CantCol, []):-
-    Aux == CantCol. %Si Aux == cantCol significa que ya recorri todas las columnas de la grilla
-columnasSeguras(GrillaIn, PistasCol, Aux, CantCol, [ColumnaSegura|RestoSalida]):-
-    Aux < CantCol,
-    getColumna(Aux,GrillaIn,Col), %Obtengo la columna en la posicion Aux de la grilla
-    length(Col, LongitudColumna),
-	nth0(Aux, PistasCol, Pista), %Obtengo las pistas de la columna en la posicion Aux de la grilla
-	sumarPistas(Pista, Suma),
-    length(Pista, LongitudPista),
-    Cuenta is (Suma + LongitudPista-1), %Cuenta calcula si la columna que cumple con las pistas tiene una unica solucion
-    Cuenta == LongitudColumna, %Verifico que la columna tenga una unica solucion
-    generarListaConPistas(Pista, ColumnaSegura), %Si la columna es unica, entonces genero la columna segura
-    Aux2 is Aux+1, %Aumento Aux para pasar a la siguiente columna
-    columnasSeguras(GrillaIn, PistasCol, Aux2, CantCol, RestoSalida).
-columnasSeguras(GrillaIn, PistasCol, Aux, CantCol, [Col|RestoSalida]):-
-    Aux < CantCol,
-    getColumna(Aux,GrillaIn,Col), %Obtengo la columna en la posicion Aux de la grilla
-    Aux2 is Aux+1, %Aumento Aux para pasar a la siguiente columna
-    columnasSeguras(GrillaIn, PistasCol, Aux2, CantCol, RestoSalida).
     
     
 resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaFinal):-
 	%Primera parte del algoritmo
 	cantFil(GrillaIn, CantFilas),
-    filasSeguras(GrillaIn, PistasFila, 0, CantFilas, GrillaAuxiliarF),
+    listasSeguras(GrillaIn, PistasFila, 0, CantFilas, GrillaAuxiliarF),
+   transpose(GrillaAuxiliarF, Transpuesta),
     cantCol(GrillaIn, CantCol),
-    columnasSeguras(GrillaAuxiliarF, PistasCol, 0, CantCol, GrillaAuxiliarC),
-    segundaParte(GrillaAuxiliarC, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol).
+    listasSeguras(Transpuesta, PistasCol, 0, CantCol, GrillaAuxiliarC),
+    transpose(GrillaAuxiliarC, GrillaDeNuevo),
+    %Segunda parte del algoritmo
+    segundaParte(GrillaDeNuevo, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol).
+
+
     
+/*segundaParte(GrillaIn, PistasFilas, PistasCol, GrillaFinal, CantFilas, CantCol):-
+    allAtomico(GrillaFinal). */
+segundaParte(GrillaIn, PistasFilas, PistasCol, GrillaFinal, CantFilas, CantCol):-
+    generarListasFinales(GrillaIn, PistasFilas, CantFilas, GrillaAuxiliarFilas, 0, CantCol),
+   transpose(GrillaAuxiliarFilas, Transpuesta),
+    generarListasFinales(Transpuesta, PistasCol, CantCol, GrillaFinalAuxCol, 0, CantFilas), 
+    transpose(GrillaFinalAuxCol, GrillaFinal).
 
-segundaParte(GrillaIn, PistasFilas, _PistasCol, GrillaFinal, CantFilas, CantCol):-
-    generarPosiblesFilas(GrillaIn, PistasFilas, CantFilas, GrillaFinal, 0, CantCol).
 
-generarPosiblesFilas(_GrillaIn, _PistasFilas, CantFilas, [], Aux, _Length):-
-    Aux == CantFilas. 
-generarPosiblesFilas(GrillaIn, PistasFilas, CantFilas, [FilaFinal | RestoFilas], Aux, Length):-
-    Aux < CantFilas,
-    nth0(Aux, GrillaIn, Fila), %Obtengo la fila en la posicion Aux de la grilla
-    not(listaLlena(Fila)), %Si es vacía (solo tiene espacios), no la salteo 
-	nth0(Aux, PistasFilas, Pista), %Obtengo la pista de esa fila    
+generarListasFinales(_GrillaIn, _ListaPistas, Cant, [], Aux, _Length):-
+    Aux == Cant. 
+generarListasFinales(GrillaIn, ListaPistas, Cant, [ListaFinal | RestoSalida], Aux, Length):-
+    Aux < Cant,
+    nth0(Aux, GrillaIn, Lista), 
+    not(listaLlena(Lista)),  
+	nth0(Aux, ListaPistas, Pista),
     findall(Lista, (length(Lista, Length), generarListaConPistas(Pista, Lista)), TodasPosibles), 
-    interseccion(TodasPosibles, CantFilas, 0, FilaFinal),
+    interseccion(TodasPosibles, Cant, 0, ListaFinal), 
     Aux2 is Aux+1, 
-    generarPosiblesFilas(GrillaIn, PistasFilas, CantFilas, RestoFilas, Aux2, Length). 
-generarPosiblesFilas(GrillaIn, PistasFilas, CantFilas, [Fila | RestoFilas], Aux, Length):-
-    Aux < CantFilas,
-    nth0(Aux, GrillaIn, Fila), %Obtengo la fila en la posicion Aux de la grilla
+    generarListasFinales(GrillaIn, ListaPistas, Cant, RestoSalida, Aux2, Length).
+generarListasFinales(GrillaIn, ListaPistas, Cant, [Lista | RestoSalida], Aux, Length):-
+    Aux < Cant,
+    nth0(Aux, GrillaIn, Lista), 
     Aux2 is Aux+1, 
-    generarPosiblesFilas(GrillaIn, PistasFilas, CantFilas, RestoFilas, Aux2, Length).     
-    
+   	generarListasFinales(GrillaIn, ListaPistas, Cant, RestoSalida, Aux2, Length).     
+
+
+
 
 interseccion(TodasPosibles, CantFilas, Aux, Out):-
     interseccion_aux(TodasPosibles, CantFilas, Aux, [], Out).
 
 
-interseccion_aux(_TodasPosibles, CantFilas, Aux, Out, Out):-
-    Aux == CantFilas. 
+interseccion_aux(_TodasPosibles, CantFilas, CantFilas, Out, Out).
 interseccion_aux(TodasPosibles, CantFilas, Aux, In, Out):-
-    Aux < CantFilas, 
+   	Aux < CantFilas, 
     findall(Elemento, (member(Lista, TodasPosibles), nth0(Aux, Lista, Elemento)), TodosLosElementos), 
     todosIguales("#", TodosLosElementos), 
-    append(["#"], In, ListaAuxiliar), 
+   	append(In, ["#"], ListaAuxiliar),
     Aux2 is Aux+1, 
     interseccion_aux(TodasPosibles, CantFilas, Aux2, ListaAuxiliar, Out). 
 interseccion_aux(TodasPosibles, CantFilas, Aux, In, Out):-
-    Aux < CantFilas, 
+  	Aux < CantFilas, 
     findall(Elemento, (member(Lista, TodasPosibles), nth0(Aux, Lista, Elemento)), TodosLosElementos), 
     todosIguales("X", TodosLosElementos), 
-    append(["X"], In, ListaAuxiliar),
+  	append(In, ["X"], ListaAuxiliar),
     Aux2 is Aux+1, 
     interseccion_aux(TodasPosibles, CantFilas, Aux2, ListaAuxiliar, Out). 
 interseccion_aux(TodasPosibles, CantFilas, Aux, In, Out):-
     Aux < CantFilas, 
-    append([_], In, ListaAuxiliar),
+   	append(In,[_], ListaAuxiliar),
     Aux2 is Aux+1, 
     interseccion_aux(TodasPosibles, CantFilas, Aux2, ListaAuxiliar, Out). 
     
+
 todosIguales(_Elemento, []). 
 todosIguales(Elemento, [X|Xs]):-
     X == Elemento, 
     todosIguales(Elemento, Xs). 
     
+
 listaLlena([]).     
 listaLlena([X|Xs]):-
     X == "#", 
     listaLlena(Xs). 
 listaLlena([X|Xs]):-
     X == "X",
-    listaLlena(Xs). 
-    
-    
+    listaLlena(Xs).
 
 
+transpose([], []).
+transpose([F|Fs], Ts) :-
+    transpose(F, [F|Fs], Ts).
+
+transpose([], _, []).
+transpose([_|Rs], Ms, [Ts|Tss]) :-
+        lists_firsts_rests(Ms, Ts, Ms1),
+        transpose(Rs, Ms1, Tss).
+
+lists_firsts_rests([], [], []).
+lists_firsts_rests([[F|Os]|Rest], [F|Fs], [Os|Oss]) :-
+        lists_firsts_rests(Rest, Fs, Oss).
+
+
+
+allAtomico([]).
+allAtomico([X|Xs]):-
+	forall(member(Elem,X), (Elem == "#"; Elem == "X")),
+	allAtomico(Xs).
