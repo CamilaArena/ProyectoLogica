@@ -343,15 +343,22 @@ resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaFinal):-
     listasSeguras(Transpuesta, PistasCol, 0, CantCol, GrillaAuxiliarC),
     transpose(GrillaAuxiliarC, GrillaDeNuevo),
     %Segunda parte del algoritmo
-    segundaParte(GrillaDeNuevo, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol).
+    resolucionCompleta(GrillaDeNuevo, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol).
 
-
+resolucionCompleta(_GrillaDeNuevo, _PistasFila, _PistasCol, GrillaFinal, _CantFilas, _CantCol):-
+    forall(member(L, GrillaFinal), (forall(member(X, L), not(var(X))))).  
+resolucionCompleta(GrillaDeNuevo, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol):-
+    segundaParte(GrillaDeNuevo, PistasFila, PistasCol, GrillaDeNuevo, CantFilas, CantCol), 
+    pasadaFinal(GrillaDeNuevo, PistasFila, PistasCol, GrillaFinal,CantCol). 
+resolucionCompleta(GrillaDeNuevo, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol):-
+	segundaParte(GrillaDeNuevo, PistasFila, PistasCol, GrillaAux, CantFilas, CantCol),
+    resolucionCompleta(GrillaAux, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol). 
     
 /*segundaParte(GrillaIn, PistasFilas, PistasCol, GrillaFinal, CantFilas, CantCol):-
     allAtomico(GrillaFinal). */
 segundaParte(GrillaIn, PistasFilas, PistasCol, GrillaFinal, CantFilas, CantCol):-
     generarListasFinales(GrillaIn, PistasFilas, CantFilas, GrillaAuxiliarFilas, 0, CantCol),
-   transpose(GrillaAuxiliarFilas, Transpuesta),
+    transpose(GrillaAuxiliarFilas, Transpuesta),
     generarListasFinales(Transpuesta, PistasCol, CantCol, GrillaFinalAuxCol, 0, CantFilas), 
     transpose(GrillaFinalAuxCol, GrillaFinal).
 
@@ -432,7 +439,22 @@ lists_firsts_rests([[F|Os]|Rest], [F|Fs], [Os|Oss]) :-
 
 
 
-allAtomico([]).
-allAtomico([X|Xs]):-
-	forall(member(Elem,X), (Elem == "#"; Elem == "X")),
-	allAtomico(Xs).
+
+
+
+pasadaFinal(GrillaIn, PistasFila, PistasCol, GrillaOut, CantCol):-
+    pasadaFinalAux(GrillaIn, PistasFila, PistasCol, [], GrillaOut, CantCol). 
+
+pasadaFinalAux([], _PistasFila, PistasCol, Acumulado, Acumulado, CantCol):-
+    verificarColumnasInicial(Acumulado, PistasCol, 0, CantCol, ColumnasCumplen), 
+    length(ColumnasCumplen, L), 
+    L == CantCol. 
+pasadaFinalAux([Fila|RestoGrilla], [_|RestoPistasFila], PistasCol, Acumulado, GrillaOut, _CantCol):-
+    listaLlena(Fila), 
+    append(Acumulado, [Fila], Aux2), 
+    pasadaFinalAux(RestoGrilla, RestoPistasFila, PistasCol, Aux2, GrillaOut, _CantCol).
+pasadaFinalAux([Fila|RestoGrilla], [Pista|RestoPistasFila], PistasCol, Acumulado, GrillaOut, _CantCol):-
+    generarListaConPistas(Pista, Fila), 
+    append(Acumulado, [Fila], Aux2), 
+    pasadaFinalAux(RestoGrilla, RestoPistasFila, PistasCol, Aux2, GrillaOut, _CantCol). 
+    
