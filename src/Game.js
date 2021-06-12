@@ -8,7 +8,13 @@ const checkbox = document.getElementById('checkbox');
 checkbox.addEventListener('change', () => {
   document.body.classList.toggle('dark')
 });
- 
+
+/* Boton de Resolver Nonograma */
+const checkboxResolverNonograma = document.getElementById('checkboxResolverNonograma');
+checkboxResolverNonograma.addEventListener('change', () => {
+  console.log("llegue");
+});
+  
 class Game extends React.Component {
 
   pengine;
@@ -228,6 +234,8 @@ class Game extends React.Component {
       }
     });
    });
+
+
 
 
     /* Boton restart */

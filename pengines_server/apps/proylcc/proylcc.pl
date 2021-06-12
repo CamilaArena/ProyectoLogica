@@ -440,8 +440,6 @@ lists_firsts_rests([[F|Os]|Rest], [F|Fs], [Os|Oss]) :-
 
 
 
-
-
 pasadaFinal(GrillaIn, PistasFila, PistasCol, GrillaOut, CantCol):-
     pasadaFinalAux(GrillaIn, PistasFila, PistasCol, [], GrillaOut, CantCol). 
 
