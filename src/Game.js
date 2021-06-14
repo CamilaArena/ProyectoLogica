@@ -21,6 +21,7 @@ class Game extends React.Component {
       grillaResuelta : null,
       grid: null,
       rowClues: null,
+      grilla_a_mostrar: null,
       colClues: null,
       selected: '#', //Modo de juego (X o #)
       disabled: false, //Deshabilita el tablero una vez que se gana el juego
@@ -29,6 +30,7 @@ class Game extends React.Component {
       satisfaceF: false,
       satisfaceC: false,
       mostrarSolucion: false,
+      ayuda : false,
       filaSatisface :[], 
       columnaSatisface:[],
       filasCumplen:[], 
@@ -43,14 +45,14 @@ class Game extends React.Component {
 
   
   showCelda() {
-    if (this.state.mostrarCelda === false) {
+    if (this.state.ayuda === false) {
       this.setState({
-        mostrarCelda: true,
+        ayuda: true,
       })
     }
     else {
       this.setState({
-        mostrarCelda: false,
+        ayuda: false,
       })
     }
   }
@@ -118,79 +120,82 @@ class Game extends React.Component {
       return;
     }
 
-
-    if (this.state.mostrarCelda) {
-
       const celda_a_insertar = this.state.grillaResuelta[i][j];  //Se recupera la celda [i][j] de la grilla resuelta.
+      const elem = this.state.ayuda ? celda_a_insertar : this.state.selected;
 
-      const pistas_filas = JSON.stringify(this.state.rowClues).replaceAll('""', "_");
-      const pistas_col = JSON.stringify(this.state.colClues).replaceAll('""', "_");
-      const squaresS = JSON.stringify(this.state.grid).replaceAll('"_"', "_"); 
+    if (this.state.grid[i][j] === "_") {    //Se revela una celda si y solo sí esta se encuentra en blanco
 
-          if (this.state.grid[i][j] === "_") {    //Se revela una celda si y solo sí esta se encuentra en blanco
-            
-          const queryInsertar = 'put("'+ celda_a_insertar +'", [' + i + ',' + j + '], '+ pistas_filas + 
-          ' , '+ pistas_col +' , ' + squaresS + ', GrillaRes, FilaSat, ColSat)';
+      //PUT
+      const squaresS = JSON.stringify(this.state.grid).replaceAll('""', "");
+      const queryS = 'put("'+elem+'", [' + i + ',' + j + '], '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+',' + squaresS + ', GrillaRes, FilaSat, ColSat)';
+      this.setState({
+        waiting: true
+      });
+    
+      this.pengine.query(queryS, (success, response) => {
+        if (success) {
+          let nuevaGrilla = response['GrillaRes']; 
+          let colSat = response['ColSat']; 
+          let filaSat = response['FilaSat'];
 
-          this.pengine.query(queryInsertar, (success, response) => {
-            if (success) {
-              
-              let nuevaGrilla = response['GrillaRes']; 
-              let colSat = response['ColSat']; 
-              let filaSat = response['FilaSat'];
-
-              this.setState({
-                grid: nuevaGrilla,
-                grilla_a_mostrar: nuevaGrilla,
-              });
-
-              this.validar_fila(i, filaSat === 1);
-              this.validar_columna(j, colSat === 1);
-              this.verificar_solucion();
-
-            }
+          this.setState({
+            grid: nuevaGrilla,
+            satisfaceF: filaSat,
+            satisfaceC: colSat,
+          });
+          
+          this.filaValida(i, filaSat === 1);
+          this.columnaValida(j, colSat === 1);
+        
+        } else {
+          this.setState({
+            waiting: false
           });
         }
+      });
     }
+    else{
+      
+      //PUT
+      const squaresS = JSON.stringify(this.state.grid).replaceAll('""', "");
+      const queryS = 'put("'+this.state.selected+'", [' + i + ',' + j + '], '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+',' + squaresS + ', GrillaRes, FilaSat, ColSat)';
+      this.setState({
+        waiting: true
+      });
+    
+      this.pengine.query(queryS, (success, response) => {
+        if (success) {
+          let nuevaGrilla = response['GrillaRes']; 
+          let colSat = response['ColSat']; 
+          let filaSat = response['FilaSat'];
 
-    //PUT
-    const squaresS = JSON.stringify(this.state.grid).replaceAll('""', "");
-    const queryS = 'put("'+this.state.selected+'", [' + i + ',' + j + '], '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+',' + squaresS + ', GrillaRes, FilaSat, ColSat)';
-    this.setState({
-      waiting: true
-    });
-  
-    this.pengine.query(queryS, (success, response) => {
-      if (success) {
-        let nuevaGrilla = response['GrillaRes']; 
-        let colSat = response['ColSat']; 
-        let filaSat = response['FilaSat'];
-
-        this.setState({
-          grid: nuevaGrilla,
-          satisfaceF: filaSat,
-          satisfaceC: colSat,
-        });
+          this.setState({
+            grid: nuevaGrilla,
+            satisfaceF: filaSat,
+            satisfaceC: colSat,
+          });
+          
+          this.filaValida(i, filaSat === 1);
+          this.columnaValida(j, colSat === 1);
         
-        this.filaValida(i, filaSat === 1);
-        this.columnaValida(j, colSat === 1);
-       
-      } else {
-        this.setState({
-          waiting: false
-        });
-        
-      }
-          //Me fijo si gane el juego
-          this.verificarGanar();
-          if(this.state.ganar === true){
-            this.setState({statusText:'Felicitaciones: ¡ganaste!'});
-          }
-          else{
-             this.setState({statusText:'Continue jugando...'});
-          }
-    });
-  }
+        } 
+        else {
+          this.setState({
+            waiting: false
+          });
+          
+        }
+      });
+    }
+            //Me fijo si gane el juego
+            this.verificarGanar();
+            if(this.state.ganar === true){
+              this.setState({statusText:'Felicitaciones: ¡ganaste!'});
+            }
+            else{
+              this.setState({statusText:'Continue jugando...'});
+            }
+}
 
   /*Cambia el modo de juego (pasa de # a X, o X a #)*/
   cambiarModo() {
@@ -283,12 +288,12 @@ class Game extends React.Component {
      
        
         <div>
-        <input type = "checkbox" className = "checkboxResolverNonograma" id = "checkboxResolverNonograma" onChange = {() => this.resolverNonograma()} value = {this.state.mostrarSolucion} ></input>
-           <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
-           <i className ="fa fa-question" aria-hidden="true"></i>
-           <div className = "ballResolverNonograma"></div>
-           </label>
-       </div> 
+          <input type = "checkbox" className = "checkboxResolverNonograma" id = "checkboxResolverNonograma" onChange = {() => this.resolverNonograma()} value = {this.state.mostrarSolucion} ></input>
+            <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
+            <i className ="fa fa-question" aria-hidden="true"></i>
+            <div className = "ballResolverNonograma"></div>
+            </label>
+        </div> 
 
         
        <div>

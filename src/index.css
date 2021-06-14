@@ -482,8 +482,6 @@ button.restart-button:active::before {
   background: url("lightbulb-OFF.png") no-repeat top left;
   width: 105px;
   height: 94px;
- /* margin-top: 400px;
-  margin-left: -500px;*/
   position: relative;
   cursor: pointer;
   outline: none;
@@ -494,6 +492,10 @@ button.restart-button:active::before {
 
 /*Animacion del boton de ayuda al pasar el cursor por encima*/
 .botonAyuda:hover {
+  background: url("lightbulb-ON.png") no-repeat top left;
+}
+
+.botonAyuda:active {
   background: url("lightbulb-ON.png") no-repeat top left;
 }
 
