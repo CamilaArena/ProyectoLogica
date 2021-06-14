@@ -84,7 +84,7 @@ class Game extends React.Component {
           columnaSatisface : Array(response['PistasColumns'].length),
         });
         
-        const tablero = JSON.stringify(grid).replaceAll('"', "");
+        const tablero = JSON.stringify(grid).replaceAll('"_"', '_');
         const queryInicial = 'verificarGrillaInicial(' + tablero + ', '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+ ','+ 0 + ',ColumnasCumplen, FilasCumplen)';
 
         this.pengine.query(queryInicial, (success, response) => {
@@ -100,24 +100,15 @@ class Game extends React.Component {
 
         const queryResolver = 'resolverNonograma(' + tablero + ', '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+',GrillaResuelta )';
    
-         /*resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaFinal)*/    
-        // const queryResolver = 'init(PistasFilas, PistasColumns, GrillaResuelta)';
-      this.pengine.query(queryResolver, (success, response) => {
-          console.log("aaaa");
-         if (success) {
-          console.log(response);
-           this.setState({
-            grillaResuelta: response['GrillaResuelta'],
-          });
-         }
-         else{
-           console.log("FALLA");
-         }
-       });
-
-
-
-
+        this.pengine.query(queryResolver, (success, response) => {
+            console.log("aaaa");
+          if (success) {
+            console.log(response);
+            this.setState({
+              grillaResuelta: response['GrillaResuelta'],
+            });
+          }
+        });
       }
     });
   }
@@ -125,6 +116,41 @@ class Game extends React.Component {
   handleClick(i, j) {
     if (this.state.waiting) {
       return;
+    }
+
+
+    if (this.state.mostrarCelda) {
+
+      const celda_a_insertar = this.state.grillaResuelta[i][j];  //Se recupera la celda [i][j] de la grilla resuelta.
+
+      const pistas_filas = JSON.stringify(this.state.rowClues).replaceAll('""', "_");
+      const pistas_col = JSON.stringify(this.state.colClues).replaceAll('""', "_");
+      const squaresS = JSON.stringify(this.state.grid).replaceAll('"_"', "_"); 
+
+          if (this.state.grid[i][j] === "_") {    //Se revela una celda si y solo sí esta se encuentra en blanco
+            
+          const queryInsertar = 'put("'+ celda_a_insertar +'", [' + i + ',' + j + '], '+ pistas_filas + 
+          ' , '+ pistas_col +' , ' + squaresS + ', GrillaRes, FilaSat, ColSat)';
+
+          this.pengine.query(queryInsertar, (success, response) => {
+            if (success) {
+              
+              let nuevaGrilla = response['GrillaRes']; 
+              let colSat = response['ColSat']; 
+              let filaSat = response['FilaSat'];
+
+              this.setState({
+                grid: nuevaGrilla,
+                grilla_a_mostrar: nuevaGrilla,
+              });
+
+              this.validar_fila(i, filaSat === 1);
+              this.validar_columna(j, colSat === 1);
+              this.verificar_solucion();
+
+            }
+          });
+        }
     }
 
     //PUT
@@ -235,14 +261,6 @@ class Game extends React.Component {
     if (this.state.grid === null) {
       return null;
     }
-
-
-    /* Boton restart */
-    const btn = document.querySelector('.restart-button');
-    btn.addEventListener('click', () => {
-      window.location.reload(false);
-    });
-
         
     return (
       <div className = "game">
@@ -263,6 +281,7 @@ class Game extends React.Component {
           {this.state.statusText}
         </div>
      
+       
         <div>
         <input type = "checkbox" className = "checkboxResolverNonograma" id = "checkboxResolverNonograma" onChange = {() => this.resolverNonograma()} value = {this.state.mostrarSolucion} ></input>
            <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
@@ -270,10 +289,18 @@ class Game extends React.Component {
            <div className = "ballResolverNonograma"></div>
            </label>
        </div> 
+
+        
+       <div>
+         <button className ="restart-button"  onClick = {() =>  window.location.reload(false)}><i class="fas fa-sync-alt fa-2x"></i></button>
+       </div> 
+
        
+        <div>
+          <button className="botonAyuda" onClick = {() => {this.showCelda()}}></button>
+        </div>
 
-        <button className="botonAyuda" onClick = {() => {}}></button>
-
+        
         <ToggleButton
           onClick={() => this.cambiarModo()}
           selected = {this.state.selected}/>
