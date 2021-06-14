@@ -333,12 +333,17 @@ listasSeguras(GrillaIn, ListaPistas, Aux, Cant, [Lista|RestoSalida]):-
     listasSeguras(GrillaIn, ListaPistas, Aux2, Cant, RestoSalida).
 
     
-    
+/*resolverNonograma(_,_,_,[[ _ , _ , _ , _ , _], 		
+ [ _ , _ , _ , _ , _ ],
+ [ _, _ , _ , "#" , _ ],		% Grilla
+ [_ , _ , _ , _ , _ ],
+ [_, _ , _ , _ , _]]).
+*/
 resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaFinal):-
 	%Primera parte del algoritmo
 	cantFil(GrillaIn, CantFilas),
     listasSeguras(GrillaIn, PistasFila, 0, CantFilas, GrillaAuxiliarF),
-   transpose(GrillaAuxiliarF, Transpuesta),
+    transpose(GrillaAuxiliarF, Transpuesta),
     cantCol(GrillaIn, CantCol),
     listasSeguras(Transpuesta, PistasCol, 0, CantCol, GrillaAuxiliarC),
     transpose(GrillaAuxiliarC, GrillaDeNuevo),
@@ -379,7 +384,6 @@ generarListasFinales(GrillaIn, ListaPistas, Cant, [Lista | RestoSalida], Aux, Le
     nth0(Aux, GrillaIn, Lista), 
     Aux2 is Aux+1, 
    	generarListasFinales(GrillaIn, ListaPistas, Cant, RestoSalida, Aux2, Length).     
-
 
 
 
@@ -436,8 +440,6 @@ transpose([_|Rs], Ms, [Ts|Tss]) :-
 lists_firsts_rests([], [], []).
 lists_firsts_rests([[F|Os]|Rest], [F|Fs], [Os|Oss]) :-
         lists_firsts_rests(Rest, Fs, Oss).
-
-
 
 
 pasadaFinal(GrillaIn, PistasFila, PistasCol, GrillaOut, CantCol):-

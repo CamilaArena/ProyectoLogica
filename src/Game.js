@@ -9,11 +9,7 @@ checkbox.addEventListener('change', () => {
   document.body.classList.toggle('dark')
 });
 
-/* Boton de Resolver Nonograma */
-const checkboxResolverNonograma = document.getElementById('checkboxResolverNonograma');
-checkboxResolverNonograma.addEventListener('change', () => {
-  console.log("llegue");
-});
+
   
 class Game extends React.Component {
 
@@ -22,7 +18,7 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      gridAux : null,
+      grillaResuelta : null,
       grid: null,
       rowClues: null,
       colClues: null,
@@ -32,6 +28,7 @@ class Game extends React.Component {
       waiting: false,
       satisfaceF: false,
       satisfaceC: false,
+      mostrarSolucion: false,
       filaSatisface :[], 
       columnaSatisface:[],
       filasCumplen:[], 
@@ -44,21 +41,50 @@ class Game extends React.Component {
     this.pengine = new PengineClient(this.handlePengineCreate);
   }
 
+  
+  showCelda() {
+    if (this.state.mostrarCelda === false) {
+      this.setState({
+        mostrarCelda: true,
+      })
+    }
+    else {
+      this.setState({
+        mostrarCelda: false,
+      })
+    }
+  }
+
+  /* Muestra la solucion del Nonograma en la grilla del juego*/
+  resolverNonograma() {
+    if (this.state.mostrarSolucion === false) {  
+      this.setState({
+        mostrarSolucion: true,
+      })
+    }
+    else {
+      this.setState({
+        mostrarSolucion: false,
+      })
+    }
+  }
+
   handlePengineCreate() {
 
     const queryS = 'init(PistasFilas, PistasColumns, Grilla)';
     this.pengine.query(queryS, (success, response) => {
       if (success) {
+        const grid = response['Grilla'];
         this.setState({
-          grid: response['Grilla'],
+          grid: grid,
           gridAux : response['Grilla'],
           rowClues: response['PistasFilas'],
           colClues: response['PistasColumns'],
           filaSatisface : Array(response['PistasFilas'].length),
           columnaSatisface : Array(response['PistasColumns'].length),
         });
-
-        const tablero = JSON.stringify(this.state.grid).replaceAll('""', "");
+        
+        const tablero = JSON.stringify(grid).replaceAll('"', "");
         const queryInicial = 'verificarGrillaInicial(' + tablero + ', '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+ ','+ 0 + ',ColumnasCumplen, FilasCumplen)';
 
         this.pengine.query(queryInicial, (success, response) => {
@@ -71,6 +97,27 @@ class Game extends React.Component {
             this.verificarGanar();
           }
         });
+
+        const queryResolver = 'resolverNonograma(' + tablero + ', '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+',GrillaResuelta )';
+   
+         /*resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaFinal)*/    
+        // const queryResolver = 'init(PistasFilas, PistasColumns, GrillaResuelta)';
+      this.pengine.query(queryResolver, (success, response) => {
+          console.log("aaaa");
+         if (success) {
+          console.log(response);
+           this.setState({
+            grillaResuelta: response['GrillaResuelta'],
+          });
+         }
+         else{
+           console.log("FALLA");
+         }
+       });
+
+
+
+
       }
     });
   }
@@ -118,34 +165,6 @@ class Game extends React.Component {
           }
     });
   }
-
-  reiniciar(){
-   /* this.setState ({grid: null});
-    this.setState ({rowClues: null});
-    this.setState ({colClues: null});
-    this.setState ({selected: '#'}); //Modo de juego (X o #)
-    this.setState ({disabled: false}); //Deshabilita el tablero una vez que se gana el juego
-    this.setState ({ganar: false});
-    this.setState ({waiting: false});
-    this.setState ({satisfaceF: false});
-    this.setState ({satisfaceC: false});
-    this.setState ({filaSatisface : []}); 
-    this.setState ({columnaSatisface: []});
-    this.setState ({filasCumplen:[]});
-    this.setState ({columnasCumplen: []}); 
-    this.setState ({statusText : '¡Bienvenido!'});
-    this.setState ({title : 'Nonograma'});*/
-
-    this.setState({
-      grid : [...this.state.gridAux] 
-    });
-  
-   /* this.handleClick = this.handleClick.bind(this);
-    this.handlePengineCreate = this.handlePengineCreate.bind(this);*/
-   /*  this.handlePengineCreate(); //Inicia una nueva partida*/
-  }
-
-
 
   /*Cambia el modo de juego (pasa de # a X, o X a #)*/
   cambiarModo() {
@@ -217,26 +236,6 @@ class Game extends React.Component {
       return null;
     }
 
-    /* Boton de ayuda */
-    const help = document.querySelector('.botonAyuda');
-     help.addEventListener('click', () => {
-
-     const tablero = JSON.stringify(this.state.grid).replaceAll('""', "");
-     const queryResolver = 'resolverNonograma(' + tablero + ', '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+ ',' +'grillaResuelta )';
-
-      /*resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaFinal)*/    
-      
-     this.pengine.query(queryResolver, (success, response) => {
-      if (success) {
-        this.setState({
-          grid: response['grillaResuelta'],
-       });
-      }
-    });
-   });
-
-
-
 
     /* Boton restart */
     const btn = document.querySelector('.restart-button');
@@ -251,7 +250,7 @@ class Game extends React.Component {
         {this.state.title}
         </div>
         <Board
-          grid = {this.state.grid}
+          grid = {this.state.mostrarSolucion ? this.state.grillaResuelta : this.state.grid}
           rowClues = {this.state.rowClues}
           colClues = {this.state.colClues}
           onClick = {(i, j) => this.handleClick(i,j)}
@@ -264,6 +263,17 @@ class Game extends React.Component {
           {this.state.statusText}
         </div>
      
+        <div>
+        <input type = "checkbox" className = "checkboxResolverNonograma" id = "checkboxResolverNonograma" onChange = {() => this.resolverNonograma()} value = {this.state.mostrarSolucion} ></input>
+           <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
+           <i className ="fa fa-question" aria-hidden="true"></i>
+           <div className = "ballResolverNonograma"></div>
+           </label>
+       </div> 
+       
+
+        <button className="botonAyuda" onClick = {() => {}}></button>
+
         <ToggleButton
           onClick={() => this.cambiarModo()}
           selected = {this.state.selected}/>
