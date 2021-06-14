@@ -241,7 +241,7 @@ class Game extends React.Component {
     /* Boton restart */
     const btn = document.querySelector('.restart-button');
     btn.addEventListener('click', () => {
-      this.reiniciar();
+      window.location.reload(false);
     });
 
         
