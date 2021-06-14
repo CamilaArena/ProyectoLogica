@@ -62,11 +62,13 @@ class Game extends React.Component {
     if (this.state.mostrarSolucion === false) {  
       this.setState({
         mostrarSolucion: true,
+        disabled : true,
       })
     }
     else {
       this.setState({
         mostrarSolucion: false,
+        disabled : false,
       })
     }
   }
@@ -116,7 +118,7 @@ class Game extends React.Component {
   }
 
   handleClick(i, j) {
-    if (this.state.waiting) {
+    if (this.state.waiting || this.state.disabled) {
       return;
     }
 
