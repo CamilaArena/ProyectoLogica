@@ -244,7 +244,7 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
   text-align: right;
   color: #fe6b8b; /* Color del texto de game info en modo claro */
   height: 100px;
-  width: 150px;
+  width: 250px;
 }
 
 .titulo{
@@ -328,7 +328,7 @@ button.restart-button:active::before {
 
 /* BOTON MODO JUEGO */
 .modojuego {
-  margin: 130px -390px 150px;
+  margin: -35px -385px 150px;
   position: absolute; 
   width: 75px;
   display: inline-block;
@@ -475,29 +475,6 @@ button.restart-button:active::before {
 .fa-question {
   color: #ffffff;
 }
-
-
-/*Boton de ayuda*/
-/*.botonAyuda{
-  background: url("lightbulb-OFF.png") no-repeat top left;
-  width: 105px;
-  height: 94px;
-  position: relative;
-  cursor: pointer;
-  outline: none;
-  border: 0;
-  vertical-align: middle;
-  padding: 1em 2em;
-}
-
-/*Animacion del boton de ayuda al pasar el cursor por encima*/
-/*.botonAyuda:hover {
-  background: url("lightbulb-ON.png") no-repeat top left;
-}
-
-.botonAyuda:active {
-  background: url("lightbulb-ON.png") no-repeat top left;
-}*/
 
 .botonAyudaON{
   width: 105px;

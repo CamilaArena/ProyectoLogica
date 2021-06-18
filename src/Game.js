@@ -268,9 +268,11 @@ class Game extends React.Component {
     let botonAyudaOFF = (this.state.ayuda ? 'botonAyudaON' : 'botonAyudaOFF'); 
     return (
       <div className = "game">
+
         <div className = "titulo">
         {this.state.title}
         </div>
+
         <Board
           grid = {this.state.mostrarSolucion ? this.state.grillaResuelta : this.state.grid}
           rowClues = {this.state.rowClues}
@@ -281,37 +283,44 @@ class Game extends React.Component {
           disabled = {this.state.disabled}
         />
 
-        <div className = "gameInfo">
-          {this.state.statusText}
-        </div>
-     
-       
-        <div>
-          <input type = "checkbox" className = "checkboxResolverNonograma" id = "checkboxResolverNonograma" onChange = {() => this.resolverNonograma()} value = {this.state.mostrarSolucion} ></input>
-            <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
-            <i className ="fa fa-question" aria-hidden="true"></i>
-            <div className = "ballResolverNonograma"></div>
-            </label>           
-        </div> 
-      
+          <div className = "ayuda">
 
-      <div>
-      
-        <button className = {botonAyudaOFF} onClick = {() => {
-          this.showCelda()
-          }}></button>
-      </div>
-     
-       <div>
-         <button className ="restart-button"  onClick = {() =>  window.location.reload(false)}><i class="fas fa-sync-alt fa-2x"></i></button>
-       </div>       
-       
+            <div>
+                <input type = "checkbox" className = "checkboxResolverNonograma" id = "checkboxResolverNonograma" onChange = {() => this.resolverNonograma()} value = {this.state.mostrarSolucion} ></input>
+                  <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
+                  <i className ="fa fa-question" aria-hidden="true"></i>
+                  <div className = "ballResolverNonograma"></div>
+                  </label>   
 
-        <div>
-         <ToggleButton
-          onClick={() => this.cambiarModo()}
-          selected = {this.state.selected}/>
-        </div>
+            </div> 
+
+            <div>
+              <button className = {botonAyudaOFF} onClick = {() => {
+                this.showCelda()
+                }}></button>
+            </div>
+      
+          </div> 
+
+    
+       <div className = "controles">
+
+          <div className = "gameInfo">
+              {this.state.statusText}
+            </div>
+
+            <div>
+            <button className ="restart-button"  onClick = {() =>  window.location.reload(false)}><i class="fas fa-sync-alt fa-2x"></i></button>
+          </div>   
+
+          <div>
+            <ToggleButton
+              onClick={() => this.cambiarModo()}
+              selected = {this.state.selected}/>
+            </div>
+
+       </div>
+      
       </div>
     );
   }
