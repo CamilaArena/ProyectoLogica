@@ -8,8 +8,6 @@ const checkbox = document.getElementById('checkbox');
 checkbox.addEventListener('change', () => {
   document.body.classList.toggle('dark')
 });
-
-
   
 class Game extends React.Component {
 
@@ -62,13 +60,11 @@ class Game extends React.Component {
     if (this.state.mostrarSolucion === false) {  
       this.setState({
         mostrarSolucion: true,
-        disabled : true,
       })
     }
     else {
       this.setState({
         mostrarSolucion: false,
-        disabled : false,
       })
     }
   }
@@ -118,7 +114,7 @@ class Game extends React.Component {
   }
 
   handleClick(i, j) {
-    if (this.state.waiting || this.state.disabled) {
+    if (this.state.waiting) {
       return;
     }
 
@@ -131,6 +127,7 @@ class Game extends React.Component {
       const squaresS = JSON.stringify(this.state.grid).replaceAll('""', "");
       const queryS = 'put("'+elem+'", [' + i + ',' + j + '], '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+',' + squaresS + ', GrillaRes, FilaSat, ColSat)';
       this.setState({
+        ayuda: false,
         waiting: true
       });
     
@@ -268,7 +265,7 @@ class Game extends React.Component {
     if (this.state.grid === null) {
       return null;
     }
-        
+    let botonAyudaOFF = (this.state.ayuda ? 'botonAyudaON' : 'botonAyudaOFF'); 
     return (
       <div className = "game">
         <div className = "titulo">
@@ -294,24 +291,28 @@ class Game extends React.Component {
             <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
             <i className ="fa fa-question" aria-hidden="true"></i>
             <div className = "ballResolverNonograma"></div>
-            </label>
+            </label>           
         </div> 
+      
 
-        
+      <div>
+      
+        <button className = {botonAyudaOFF} onClick = {() => {
+          this.showCelda()
+          }}></button>
+      </div>
+     
        <div>
          <button className ="restart-button"  onClick = {() =>  window.location.reload(false)}><i class="fas fa-sync-alt fa-2x"></i></button>
-       </div> 
-
+       </div>       
        
-        <div>
-          <button className="botonAyuda" onClick = {() => {this.showCelda()}}></button>
-        </div>
 
-        
-        <ToggleButton
+        <div>
+         <ToggleButton
           onClick={() => this.cambiarModo()}
           selected = {this.state.selected}/>
         </div>
+      </div>
     );
   }
 }

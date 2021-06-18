@@ -267,11 +267,10 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 
 /*Boton restart*/
 button {
+  justify-content: space-between;
   position: relative;
-  margin-top: 90px;
   display: inline-block;
   cursor: pointer;
-  outline: none;
   border: 0;
   vertical-align: middle;
   text-decoration: none;
@@ -291,7 +290,7 @@ button.restart-button {
   transition: all 175ms cubic-bezier(0, 0, 1, 1);
 }
 
-button.restart-button::before {
+button.restart-button::before {  
   position: absolute;
   content: '';
   width: 100%;
@@ -329,8 +328,8 @@ button.restart-button:active::before {
 
 /* BOTON MODO JUEGO */
 .modojuego {
-  position: relative; 
-  margin: 138px -90px 150px;
+  margin: 130px -390px 150px;
+  position: absolute; 
   width: 75px;
   display: inline-block;
   vertical-align: middle;
@@ -339,6 +338,7 @@ button.restart-button:active::before {
   -ms-user-select: none;
   user-select: none;
   text-align: left;  
+  justify-content: space-between;
 }
 
 .toggle-switch-checkbox,
@@ -384,6 +384,8 @@ button.restart-button:active::before {
 
 /* Label dark mode */
 .label { 
+  margin: -35px -385px 150px;
+  position: absolute;
   background-color: #6B97D8;
   border-radius: 50px;
   cursor: pointer;
@@ -391,8 +393,6 @@ button.restart-button:active::before {
   align-items: center;
   justify-content: space-between;
   padding: 5px;
-  position: relative;
-  margin: 320px 22px 150px;
   height: 26px;
   width: 50px;
   transform: scale(1.2);
@@ -447,7 +447,7 @@ button.restart-button:active::before {
   align-items: center;
   justify-content: space-between;
   padding: 5px;
-  position: relative;
+  position: absolute;
   margin: 320px 22px 150px;
   height: 26px;
   width: 50px;
@@ -478,7 +478,7 @@ button.restart-button:active::before {
 
 
 /*Boton de ayuda*/
-.botonAyuda{
+/*.botonAyuda{
   background: url("lightbulb-OFF.png") no-repeat top left;
   width: 105px;
   height: 94px;
@@ -491,12 +491,35 @@ button.restart-button:active::before {
 }
 
 /*Animacion del boton de ayuda al pasar el cursor por encima*/
-.botonAyuda:hover {
+/*.botonAyuda:hover {
   background: url("lightbulb-ON.png") no-repeat top left;
 }
 
 .botonAyuda:active {
   background: url("lightbulb-ON.png") no-repeat top left;
+}*/
+
+.botonAyudaON{
+  width: 105px;
+  height: 94px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  border: 0;
+  vertical-align: middle;
+  padding: 1em 2em;
+  background: url("lightbulb-ON.png") no-repeat top left;
 }
 
+.botonAyudaOFF{
+  background: url("lightbulb-OFF.png") no-repeat top left;
+  width: 105px;
+  height: 94px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  border: 0;
+  vertical-align: middle;
+  padding: 1em 2em;
+}
 
