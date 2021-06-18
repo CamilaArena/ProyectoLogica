@@ -294,14 +294,27 @@ generarListaConPistas([X|RestoPistas], [Y|Ys]):-
     generarListaConPistas([X|RestoPistas], ListaEnHashtag).
 
 
-    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% resolverNonograma(+GrillaIn, +PistasFila, +PistasCol, -GrillaFinal)
+%  
+
+% Dada la grilla del juego,las pistas de las filas y las pistas de las columnas,
+% resuelve la solucion de la grilla.  
 resolverNonograma(GrillaIn, PistasFila, PistasCol, GrillaFinal):-
-	%Primera parte del algoritmo
 	cantFil(GrillaIn, CantFilas),
     cantCol(GrillaIn, CantCol),
-    %Segunda parte del algoritmo
     resolucionCompleta(GrillaIn, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol).
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% resolucionCompleta(+GrillaDeNuevo, +PistasFila, +PistasCol, -GrillaFinal, +CantFilas, +CantCol)
+% 
+
+% Dada una grilla, pistas de las filas, pistas de las columnas, cantidad de filas y
+% cantidad de columnas, resuelve por completo la grilla dada.
 resolucionCompleta(_GrillaDeNuevo, _PistasFila, _PistasCol, GrillaFinal, _CantFilas, _CantCol):-
     forall(member(L, GrillaFinal), (forall(member(X, L), not(var(X))))).  
 resolucionCompleta(GrillaDeNuevo, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol):-
@@ -310,7 +323,12 @@ resolucionCompleta(GrillaDeNuevo, PistasFila, PistasCol, GrillaFinal, CantFilas,
 resolucionCompleta(GrillaDeNuevo, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol):-
 	segundaParte(GrillaDeNuevo, PistasFila, PistasCol, GrillaAux, CantFilas, CantCol),
     resolucionCompleta(GrillaAux, PistasFila, PistasCol, GrillaFinal, CantFilas, CantCol). 
-    
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% segundaParte(+GrillaIn, +PistasFilas, +PistasCol, -GrillaFinal, +CantFilas, +CantCol)
+% 
 segundaParte(GrillaIn, PistasFilas, PistasCol, GrillaFinal, CantFilas, CantCol):-
     generarListasFinales(GrillaIn, PistasFilas, CantFilas, GrillaAuxiliarFilas, 0, CantCol),
    transpose(GrillaAuxiliarFilas, Transpuesta),
@@ -318,6 +336,13 @@ segundaParte(GrillaIn, PistasFilas, PistasCol, GrillaFinal, CantFilas, CantCol):
     transpose(GrillaFinalAuxCol, GrillaFinal).
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% generarListasFinales(+GrillaIn, +ListaPistas, +Cant, -ListasFinales, +Aux, +Length)
+%
+
+% Dada una grilla, la lista de pistas de la grilla y la cantidad de filas/columnas, genera todas las
+% listas que cumplen con esas pistas.
 generarListasFinales(_GrillaIn, _ListaPistas, Cant, [], Aux, _Length):-
     Aux == Cant. 
 generarListasFinales(GrillaIn, ListaPistas, Cant, [ListaFinal | RestoSalida], Aux, Length):-
@@ -347,12 +372,21 @@ generarListasFinales(GrillaIn, ListaPistas, Cant, [Lista | RestoSalida], Aux, Le
    	generarListasFinales(GrillaIn, ListaPistas, Cant, RestoSalida, Aux2, Length).     
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% interseccion(+TodasPosibles, +Length, +Aux, -Out)
+%
 
-
+% Predicado cascara de interseccion_aux
 interseccion(TodasPosibles, Length, Aux, Out):-
     interseccion_aux(TodasPosibles, Length, Aux, [], Out).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% interseccion_aux(+TodasPosibles, +Length,+Length, -Out, -Out)
+%
 
+% Genera la interseccion entre las listas pasadas por parametro.
 interseccion_aux(_TodasPosibles, Length, Length, Out, Out).
 interseccion_aux(TodasPosibles, Length, Aux, In, Out):-
    	Aux < Length, 
@@ -374,40 +408,22 @@ interseccion_aux(TodasPosibles, Length, Aux, In, Out):-
     Aux2 is Aux+1, 
     interseccion_aux(TodasPosibles, Length, Aux2, ListaAuxiliar, Out). 
     
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% pasadaFinal(+GrillaIn, +PistasFila, +PistasCol, -GrillaOut)
+%
 
-todosIguales(_Elemento, []). 
-todosIguales(Elemento, [X|Xs]):-
-    X == Elemento, 
-    todosIguales(Elemento, Xs). 
-    
-
-listaLlena([]).     
-listaLlena([X|Xs]):-
-    X == "#", 
-    listaLlena(Xs). 
-listaLlena([X|Xs]):-
-    X == "X",
-    listaLlena(Xs).
-
-
-transpose([], []).
-transpose([F|Fs], Ts) :-
-    transpose(F, [F|Fs], Ts).
-
-transpose([], _, []).
-transpose([_|Rs], Ms, [Ts|Tss]) :-
-        lists_firsts_rests(Ms, Ts, Ms1),
-        transpose(Rs, Ms1, Tss).
-
-lists_firsts_rests([], [], []).
-lists_firsts_rests([[F|Os]|Rest], [F|Fs], [Os|Oss]) :-
-        lists_firsts_rests(Rest, Fs, Oss).
-
-
-
+% Predicado cascara de pasadaFinalAux
 pasadaFinal(GrillaIn, PistasFila, PistasCol, GrillaOut):-
     pasadaFinalAux(GrillaIn, PistasFila, PistasCol, [], GrillaOut). 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% pasadaFinalAux([], _PistasFila, PistasCol, Acumulado, Acumulado)
+%
+
+%
 pasadaFinalAux([], _PistasFila, PistasCol, Acumulado, Acumulado):-
     cantCol(Acumulado, CantCol),
     verificarColumnasInicial(Acumulado, PistasCol, 0, CantCol, ColumnasCumplen), 
@@ -421,3 +437,56 @@ pasadaFinalAux([Fila|RestoGrilla], [Pista|RestoPistasFila], PistasCol, Acumulado
     generarListaConPistas(Pista, Fila), 
     append(Acumulado, [Fila], Aux2), 
     pasadaFinalAux(RestoGrilla, RestoPistasFila, PistasCol, Aux2, GrillaOut).
+
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% transpose(+In, -Out).
+%
+
+% Genera la transpuesta de la grilla pasada por parametro.
+transpose([], []).
+transpose([F|Fs], Ts) :-
+    transpose(F, [F|Fs], Ts).
+transpose([], _, []).
+transpose([_|Rs], Ms, [Ts|Tss]) :-
+        lists_firsts_rests(Ms, Ts, Ms1),
+        transpose(Rs, Ms1, Tss).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% lists_firsts_rests([], [], []).
+%
+
+%
+lists_firsts_rests([], [], []).
+lists_firsts_rests([[F|Os]|Rest], [F|Fs], [Os|Oss]) :-
+        lists_firsts_rests(Rest, Fs, Oss).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% todosIguales(+Elemento, +Lista). 
+%
+
+% Retorna true si todos los elementos de la lista pasada por parametro son iguales
+% a Elemento. Caso contrario retorna false.
+todosIguales(_Elemento, []). 
+todosIguales(Elemento, [X|Xs]):-
+    X == Elemento, 
+    todosIguales(Elemento, Xs). 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% listaLlena(-Lista).
+%
+
+% Retorna true si la lista pasada por parametro esta llena, y retorna falso en caso contrario.
+listaLlena([]).     
+listaLlena([X|Xs]):-
+    X == "#", 
+    listaLlena(Xs). 
+listaLlena([X|Xs]):-
+    X == "X",
+    listaLlena(Xs).
