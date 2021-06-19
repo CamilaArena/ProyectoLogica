@@ -95,6 +95,12 @@ class Game extends React.Component {
             });
             this.setFilasyColumnasValidas();
             this.verificarGanar();
+
+            if(this.state.ganar){
+              this.setState({statusText:'Felicitaciones: ¡ganaste!'});
+              this.setState({disabled:true});
+            }
+
           }
         });
 
@@ -114,7 +120,7 @@ class Game extends React.Component {
   }
 
   handleClick(i, j) {
-    if (this.state.waiting) {
+    if (this.state.waiting ) {
       return;
     }
 
@@ -152,6 +158,7 @@ class Game extends React.Component {
           });
         }
       });
+      
     }
     else{
       
@@ -186,14 +193,16 @@ class Game extends React.Component {
         }
       });
     }
-            //Me fijo si gane el juego
-            this.verificarGanar();
-            if(this.state.ganar === true){
-              this.setState({statusText:'Felicitaciones: ¡ganaste!'});
-            }
-            else{
-              this.setState({statusText:'Continue jugando...'});
-            }
+  
+    //Me fijo si gane el juego
+    this.verificarGanar();
+    if(this.state.ganar){
+      this.setState({statusText:'Felicitaciones: ¡ganaste!'});
+      this.setState({disabled:true});
+    }
+    else{
+      this.setState({statusText:'Continúe jugando ...'});
+    }
 }
 
   /*Cambia el modo de juego (pasa de # a X, o X a #)*/
@@ -255,9 +264,11 @@ class Game extends React.Component {
 
     if(verificaC && verificaF){
       this.setState({ganar : true, disabled:true,});
+     
     }
     else{
       this.setState({ganar : false,});
+      this.setState({statusText:'Continúe jugando ...'});
     }
   }
 
@@ -265,7 +276,9 @@ class Game extends React.Component {
     if (this.state.grid === null) {
       return null;
     }
+
     let botonAyudaOFF = (this.state.ayuda ? 'botonAyudaON' : 'botonAyudaOFF'); 
+    
     return (
       <div className = "game">
 
@@ -283,33 +296,25 @@ class Game extends React.Component {
           disabled = {this.state.disabled}
         />
 
-          <div className = "ayuda">
-
+          <div className = "SeccionAyuda">
             <div>
                 <input type = "checkbox" className = "checkboxResolverNonograma" id = "checkboxResolverNonograma" onChange = {() => this.resolverNonograma()} value = {this.state.mostrarSolucion} ></input>
                   <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
-                  <i className ="fa fa-question" aria-hidden="true"></i>
-                  <div className = "ballResolverNonograma"></div>
+                    <i className ="fa fa-question" aria-hidden="true"></i>
+                    <div className = "ballResolverNonograma"></div>
                   </label>   
-
             </div> 
+          </div> 
 
-            <div>
+          <div>
               <button className = {botonAyudaOFF} onClick = {() => {
                 this.showCelda()
                 }}></button>
-            </div>
-      
-          </div> 
+          </div>
 
     
-       <div className = "controles">
-
-          <div className = "gameInfo">
-              {this.state.statusText}
-            </div>
-
-            <div>
+       <div className = "SeccionControles">
+          <div>
             <button className ="restart-button"  onClick = {() =>  window.location.reload(false)}><i class="fas fa-sync-alt fa-2x"></i></button>
           </div>   
 
@@ -317,10 +322,13 @@ class Game extends React.Component {
             <ToggleButton
               onClick={() => this.cambiarModo()}
               selected = {this.state.selected}/>
-            </div>
-
+          </div>
        </div>
       
+       <div className = "gameInfo">
+              {this.state.statusText}
+       </div>
+
       </div>
     );
   }
