@@ -13,7 +13,7 @@ class Game extends React.Component {
 
   pengine;
 
-  constructor(props) {
+  constructor(props){
     super(props);
     this.state = {
       grillaResuelta : null,
@@ -94,22 +94,19 @@ class Game extends React.Component {
               columnasCumplen : response['ColumnasCumplen'],
             });
             this.setFilasyColumnasValidas();
-            this.verificarGanar();
-
-            if(this.state.ganar){
-              this.setState({statusText:'Felicitaciones: ¡ganaste!'});
-              this.setState({disabled:true});
-            }
-
+           
+          //Me fijo si gane el juego por si ingresaron una grilla resuelta
+          this.verificarGanar();
+          if(this.state.ganar === true){
+            this.setState({statusText:'Felicitaciones: ¡ganaste!'});
+          }
           }
         });
 
         const queryResolver = 'resolverNonograma(' + tablero + ', '+JSON.stringify(this.state.rowClues)+', '+JSON.stringify(this.state.colClues)+',GrillaResuelta )';
    
         this.pengine.query(queryResolver, (success, response) => {
-            console.log("aaaa");
           if (success) {
-            console.log(response);
             this.setState({
               grillaResuelta: response['GrillaResuelta'],
             });
@@ -157,6 +154,14 @@ class Game extends React.Component {
             waiting: false
           });
         }
+        //Me fijo si gane el juego
+        this.verificarGanar();
+        if(this.state.ganar === true){
+          this.setState({statusText:'Felicitaciones: ¡ganaste!'});
+        }
+        else{
+           this.setState({statusText:'Continúe jugando . . .'});
+        }
       });
       
     }
@@ -191,17 +196,15 @@ class Game extends React.Component {
           });
           
         }
+        //Me fijo si gane el juego
+        this.verificarGanar();
+        if(this.state.ganar === true){
+          this.setState({statusText:'Felicitaciones: ¡ganaste!'});
+        }
+        else{
+           this.setState({statusText:'Continúe jugando . . .'});
+        }
       });
-    }
-  
-    //Me fijo si gane el juego
-    this.verificarGanar();
-    if(this.state.ganar){
-      this.setState({statusText:'Felicitaciones: ¡ganaste!'});
-      this.setState({disabled:true});
-    }
-    else{
-      this.setState({statusText:'Continúe jugando ...'});
     }
 }
 
@@ -264,11 +267,9 @@ class Game extends React.Component {
 
     if(verificaC && verificaF){
       this.setState({ganar : true, disabled:true,});
-     
     }
     else{
       this.setState({ganar : false,});
-      this.setState({statusText:'Continúe jugando ...'});
     }
   }
 
@@ -315,7 +316,7 @@ class Game extends React.Component {
     
        <div className = "SeccionControles">
           <div>
-            <button className ="restart-button"  onClick = {() =>  window.location.reload(false)}><i class="fas fa-sync-alt fa-2x"></i></button>
+            <button className ="restart-button"  onClick = {() =>  window.location.reload(false)}><i className="fas fa-sync-alt fa-2x"></i></button>
           </div>   
 
           <div>

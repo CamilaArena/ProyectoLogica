@@ -234,7 +234,7 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 
 .gameInfo {
   margin-top: 10px;
-  margin-right: -350px;
+  margin-right: -380px;
   display: inline-block;
   vertical-align: middle;
   position: absolute;
@@ -242,10 +242,10 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
   font-family: "KoHo";
   font-weight: bold;
   font-size: 150%;
-  text-align: right;
+  text-align: center;
   color: #fe6b8b; /* Color del texto de game info en modo claro */
   height: 100px;
-  width: 250px;
+  width: 150px;
 }
 
 .titulo{
