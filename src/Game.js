@@ -54,11 +54,13 @@ class Game extends React.Component {
     if (this.state.mostrarSolucion === false) {  
       this.setState({
         mostrarSolucion: true,
+        disabled : true
       })
     }
     else {
       this.setState({
         mostrarSolucion: false,
+        disabled:false
       })
     }
   }
@@ -275,10 +277,11 @@ class Game extends React.Component {
     let botonAyudaOFF = (this.state.ayuda ? 'botonAyudaON' : 'botonAyudaOFF'); 
     
     return (
-      <div className = "game">
+    <div className = "game">
 
         <div className = "titulo">
         {this.state.title}
+        
         </div>
 
         <Board
@@ -290,49 +293,52 @@ class Game extends React.Component {
           columnaSatisface = {this.state.columnaSatisface}
           disabled = {this.state.disabled}
         />
+        
         <div>
 
+                <div>
+                    <input type = "checkbox" className = "checkboxResolverNonograma" id = "checkboxResolverNonograma" onChange = {() => this.resolverNonograma()} value = {this.state.mostrarSolucion} ></input>
+                      <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
+                       <i class="fa fa-check" ></i>
+                        <i className ="fa fa-question"></i>
+                        <div className = "ballResolverNonograma"></div>
+                      </label>   
+                </div> 
+
+              <div>
+                  <button className = {botonAyudaOFF} onClick = {() => {
+                    this.showCelda()
+                    }}></button>
+              </div>
+
+              <div>
+                <button className ="restart-button"  onClick = {() =>  window.location.reload(false)}><i className="fas fa-sync-alt fa-2x"></i></button>
+              </div>   
+
+              <div>
+                <ToggleButton
+                  onClick={() => this.cambiarModo()}
+                  selected = {this.state.selected}/>
+              </div>
+          
+            <div className = "gameInfo">
+                    {this.state.statusText}
+            </div>
+
+          
             <div>
-                <input type = "checkbox" className = "checkboxResolverNonograma" id = "checkboxResolverNonograma" onChange = {() => this.resolverNonograma()} value = {this.state.mostrarSolucion} ></input>
-                  <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
-                    <i className ="fa fa-question" aria-hidden="true"></i>
-                    <div className = "ballResolverNonograma"></div>
-                  </label>   
-            </div> 
+              <input type = "checkbox" class = "checkbox" id = "checkbox" onChange = {() => document.body.classList.toggle('dark')}></input>
+              <label for = "checkbox" class = "label">
+                <i class = "fas fa-moon"></i>
+                <i class = "fas fa-sun"></i>
+                <div class = "ball"></div>
+              </label>
+           </div>
+           
 
-          <div>
-              <button className = {botonAyudaOFF} onClick = {() => {
-                this.showCelda()
-                }}></button>
-          </div>
-
-    
-          <div>
-            <button className ="restart-button"  onClick = {() =>  window.location.reload(false)}><i className="fas fa-sync-alt fa-2x"></i></button>
-          </div>   
-
-          <div>
-            <ToggleButton
-              onClick={() => this.cambiarModo()}
-              selected = {this.state.selected}/>
-          </div>
-      
-       <div className = "gameInfo">
-              {this.state.statusText}
-       </div>
-
-       
-       <div>
-          <input type = "checkbox" class = "checkbox" id = "checkbox" onChange = {() => document.body.classList.toggle('dark')}></input>
-          <label for = "checkbox" class = "label">
-            <i class = "fas fa-moon"></i>
-            <i class = "fas fa-sun"></i>
-            <div class = "ball"></div>
-          </label>
         </div>
-
-      </div>
-      </div>
+      
+    </div>
 
     );
   }

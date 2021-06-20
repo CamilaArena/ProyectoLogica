@@ -94,6 +94,10 @@ body.dark .fa-question {
   color: #000000;
 }
 
+body.dark .fa-check{
+  color: #000000;
+}
+
 body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
   background-color: var(--colorShadeD);
 }
@@ -233,11 +237,11 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 }
 
 .gameInfo {
-  margin-top: 10px;
-  margin-right: -380px;
+  top: -1605px;
+  left: -30px;
   display: inline-block;
   vertical-align: middle;
-  position: absolute;
+  position: relative;
   margin-left: 25px;
   font-family: "KoHo";
   font-weight: bold;
@@ -249,12 +253,12 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 }
 
 .titulo{
-  margin-top: -85px;
-  margin-right: -115px;
-  display: flex;  
+  top: -80px;
+  left: 210px;
+  display: relative;  
   justify-content: center;
   vertical-align: middle;
-  position: absolute;
+  position: relative;
   margin-left: -60px;
   font-family: "Pacifico";
   font-weight: bold;
@@ -269,7 +273,7 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 /*Boton restart*/
 .restart-button {
   margin-top: 188px;
-  margin-left: -35px;
+  margin-left: -30px;
   justify-content: space-between;
   position: relative;
   display: inline-block;
@@ -288,6 +292,8 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
   background: var(--colorShadeE);
   transform-style: preserve-3d;
   transition: all 175ms cubic-bezier(0, 0, 1, 1);
+  top:-1090px;
+  left: 60px;
 }
 
 .restart-button::before {  
@@ -329,6 +335,8 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 /* BOTON MODO JUEGO */
 .modojuego {
   margin: 80px -78px 150px;
+  top : -1345px;
+  left: 110px;;
   position: relative; 
   width: 75px;
   display: inline-block;
@@ -383,9 +391,10 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 }
 
 /* Label dark mode */
-.label { 
-  margin: -10px -20px 150px;
-  position: absolute;
+.label {
+  top: -1575px;
+  left: 38px; 
+  position: relative;
   background-color: #6B97D8;
   border-radius: 50px;
   cursor: pointer;
@@ -395,8 +404,7 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
   padding: 5px;
   height: 26px;
   width: 50px;
-  /*transform: scale(1.2);*/
-  transform: translate(-50%,-50%);
+  transform: scale(1.2);
 }
 
 .ball {
@@ -441,12 +449,16 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 }
 
 .labelResolverNonograma {
-  margin-top: 500px; 
-  margin-left: -50px;
+  top : -110px;
+  left: 93px;;
+  position: relative; 
+  width: 75px;
+  display: flex;
+  margin-top: 495px; 
+  margin-left: -55px;
   background-color: #a681aa;
   border-radius: 50px;
   cursor: pointer;
-  display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 5px;
@@ -478,9 +490,15 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
   color: #ffffff;
 }
 
+.fa-check{
+  color: #ffffff;
+}
+
 .botonAyudaON{
-  margin-top: 20px;
-  margin-left: -108px;
+  margin-top: 480px;
+  margin-left: -50px;
+  top: -740px;
+  left: 65px;
   background: url("lightbulb-ON.png") no-repeat top left;
   width: 105px;
   height: 94px;
@@ -493,8 +511,10 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 }
 
 .botonAyudaOFF{
-  margin-top: 470px;
-  margin-left: -170px;
+  margin-top: 480px;
+  margin-left: -50px;
+  top: -740px;
+  left: 65px;
   background: url("lightbulb-OFF.png") no-repeat top left;
   width: 105px;
   height: 94px;
