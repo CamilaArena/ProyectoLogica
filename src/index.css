@@ -268,10 +268,10 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 
 /*Boton restart*/
 .restart-button {
-  margin-top: 200px;
-  margin-left: -218px;
+  margin-top: 188px;
+  margin-left: -35px;
   justify-content: space-between;
-  position: absolute;
+  position: relative;
   display: inline-block;
   cursor: pointer;
   border: 0;
@@ -328,8 +328,8 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 
 /* BOTON MODO JUEGO */
 .modojuego {
-  margin: 80px -213px 150px;
-  position: absolute; 
+  margin: 80px -78px 150px;
+  position: relative; 
   width: 75px;
   display: inline-block;
   vertical-align: middle;
@@ -384,7 +384,7 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 
 /* Label dark mode */
 .label { 
-  margin: 40px 35px 150px;
+  margin: -10px -20px 150px;
   position: absolute;
   background-color: #6B97D8;
   border-radius: 50px;
@@ -395,7 +395,8 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
   padding: 5px;
   height: 26px;
   width: 50px;
-  transform: scale(1.2);
+  /*transform: scale(1.2);*/
+  transform: translate(-50%,-50%);
 }
 
 .ball {
@@ -439,8 +440,9 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
   background-color: #ff6cce;
 }
 
-.labelResolverNonograma { 
-  margin-left: -5px;
+.labelResolverNonograma {
+  margin-top: 500px; 
+  margin-left: -50px;
   background-color: #a681aa;
   border-radius: 50px;
   cursor: pointer;
@@ -448,7 +450,7 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
   align-items: center;
   justify-content: space-between;
   padding: 5px;
-  position: absolute;
+  position: relative;
   height: 26px;
   width: 50px;
   transform: scale(1.2);
@@ -477,12 +479,12 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 }
 
 .botonAyudaON{
-  margin-top: 260px;
+  margin-top: 20px;
   margin-left: -108px;
   background: url("lightbulb-ON.png") no-repeat top left;
   width: 105px;
   height: 94px;
-  position: absolute;
+  position: relative;
   cursor: pointer;
   outline: none;
   border: 0;
@@ -491,30 +493,15 @@ body.dark .checkboxResolverNonograma:checked + .labelResolverNonograma{
 }
 
 .botonAyudaOFF{
-  margin-top: 260px;
-  margin-left: -108px;
+  margin-top: 470px;
+  margin-left: -170px;
   background: url("lightbulb-OFF.png") no-repeat top left;
   width: 105px;
   height: 94px;
-  position: absolute;
+  position: relative;
   cursor: pointer;
   outline: none;
   border: 0;
   vertical-align: middle;
   padding: 1em 2em;
 }
-
-.SeccionAyuda{
-  display: inline-block;
-  position: absolute;
-  margin-top: 300px;
-  margin-right: 50px;
-}
-
-
-.SeccionControles{
-  display: inline-block;
-  position: absolute;
-  margin-left: 750px;
-}
-

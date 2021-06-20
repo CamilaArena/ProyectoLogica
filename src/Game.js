@@ -2,12 +2,6 @@ import React from 'react';
 import PengineClient from './PengineClient';
 import Board from './Board';
 import ToggleButton from './ToggleButton';
-
-/*Toggle de dark mode*/
-const checkbox = document.getElementById('checkbox');
-checkbox.addEventListener('change', () => {
-  document.body.classList.toggle('dark')
-});
   
 class Game extends React.Component {
 
@@ -296,8 +290,8 @@ class Game extends React.Component {
           columnaSatisface = {this.state.columnaSatisface}
           disabled = {this.state.disabled}
         />
+        <div>
 
-          <div className = "SeccionAyuda">
             <div>
                 <input type = "checkbox" className = "checkboxResolverNonograma" id = "checkboxResolverNonograma" onChange = {() => this.resolverNonograma()} value = {this.state.mostrarSolucion} ></input>
                   <label htmlFor = "checkboxResolverNonograma" className = "labelResolverNonograma">
@@ -305,7 +299,6 @@ class Game extends React.Component {
                     <div className = "ballResolverNonograma"></div>
                   </label>   
             </div> 
-          </div> 
 
           <div>
               <button className = {botonAyudaOFF} onClick = {() => {
@@ -314,7 +307,6 @@ class Game extends React.Component {
           </div>
 
     
-       <div className = "SeccionControles">
           <div>
             <button className ="restart-button"  onClick = {() =>  window.location.reload(false)}><i className="fas fa-sync-alt fa-2x"></i></button>
           </div>   
@@ -324,13 +316,24 @@ class Game extends React.Component {
               onClick={() => this.cambiarModo()}
               selected = {this.state.selected}/>
           </div>
-       </div>
       
        <div className = "gameInfo">
               {this.state.statusText}
        </div>
 
+       
+       <div>
+          <input type = "checkbox" class = "checkbox" id = "checkbox" onChange = {() => document.body.classList.toggle('dark')}></input>
+          <label for = "checkbox" class = "label">
+            <i class = "fas fa-moon"></i>
+            <i class = "fas fa-sun"></i>
+            <div class = "ball"></div>
+          </label>
+        </div>
+
       </div>
+      </div>
+
     );
   }
 }
