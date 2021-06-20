@@ -10,25 +10,25 @@ class Game extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      grillaResuelta : null,
-      grid: null,
-      rowClues: null,
-      grilla_a_mostrar: null,
-      colClues: null,
-      selected: '#', //Modo de juego (X o #)
-      disabled: false, //Deshabilita el tablero una vez que se gana el juego
-      ganar: false,
-      waiting: false,
-      satisfaceF: false,
-      satisfaceC: false,
-      mostrarSolucion: false,
-      ayuda : false,
+      grillaResuelta:null,
+      grid:null,
+      rowClues:null,
+      grilla_a_mostrar:null,
+      colClues:null,
+      selected:'#', //Modo de juego (X o #)
+      disabled:false, //Deshabilita el tablero una vez que se gana el juego
+      ganar:false,
+      waiting:false,
+      satisfaceF:false,
+      satisfaceC:false,
+      mostrarSolucion:false,
+      ayuda:false,
       filaSatisface :[], 
       columnaSatisface:[],
       filasCumplen:[], 
       columnasCumplen:[], 
-      statusText : '¡Bienvenido!',
-      title : 'Nonograma', 
+      statusText:'¡Bienvenido!',
+      title:'Nonograma', 
     };
     this.handleClick = this.handleClick.bind(this);
     this.handlePengineCreate = this.handlePengineCreate.bind(this);
@@ -40,11 +40,6 @@ class Game extends React.Component {
     if (this.state.ayuda === false) {
       this.setState({
         ayuda: true,
-      })
-    }
-    else {
-      this.setState({
-        ayuda: false,
       })
     }
   }
@@ -113,7 +108,7 @@ class Game extends React.Component {
   }
 
   handleClick(i, j) {
-    if (this.state.waiting ) {
+    if (this.state.waiting || this.state.grillaResuelta === null || this.state.mostrarSolucion) {
       return;
     }
 
@@ -150,6 +145,7 @@ class Game extends React.Component {
             waiting: false
           });
         }
+
         //Me fijo si gane el juego
         this.verificarGanar();
         if(this.state.ganar === true){
@@ -285,7 +281,7 @@ class Game extends React.Component {
         </div>
 
         <Board
-          grid = {this.state.mostrarSolucion ? this.state.grillaResuelta : this.state.grid}
+          grid = {(this.state.mostrarSolucion && this.state.grillaResuelta != null) ? this.state.grillaResuelta : this.state.grid}
           rowClues = {this.state.rowClues}
           colClues = {this.state.colClues}
           onClick = {(i, j) => this.handleClick(i,j)}
